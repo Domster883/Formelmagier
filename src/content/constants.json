@@ -1,0 +1,14 @@
+[
+  { "symbol": "c", "name": "Lichtgeschwindigkeit im Vakuum", "value": "2,998 · 10⁸", "unit": "m/s" },
+  { "symbol": "h", "name": "Planck'sches Wirkungsquantum", "value": "6,626 · 10⁻³⁴", "unit": "J·s" },
+  { "symbol": "e", "name": "Elementarladung", "value": "1,602 · 10⁻¹⁹", "unit": "C" },
+  { "symbol": "k_B", "name": "Boltzmann-Konstante", "value": "1,381 · 10⁻²³", "unit": "J/K" },
+  { "symbol": "N_A", "name": "Avogadro-Konstante", "value": "6,022 · 10²³", "unit": "1/mol" },
+  { "symbol": "R", "name": "allgemeine Gaskonstante", "value": "8,314", "unit": "J/(mol·K)" },
+  { "symbol": "g", "name": "Fallbeschleunigung (Normwert)", "value": "9,81", "unit": "m/s²" },
+  { "symbol": "G", "name": "Gravitationskonstante", "value": "6,674 · 10⁻¹¹", "unit": "N·m²/kg²" },
+  { "symbol": "ε₀", "name": "elektrische Feldkonstante", "value": "8,854 · 10⁻¹²", "unit": "A·s/(V·m)" },
+  { "symbol": "µ₀", "name": "magnetische Feldkonstante", "value": "1,257 · 10⁻⁶", "unit": "V·s/(A·m)" },
+  { "symbol": "σ", "name": "Stefan-Boltzmann-Konstante", "value": "5,670 · 10⁻⁸", "unit": "W/(m²·K⁴)" },
+  { "symbol": "p₀", "name": "Normdruck", "value": "1,013 · 10⁵", "unit": "Pa" }
+]

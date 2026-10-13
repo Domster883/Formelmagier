@@ -1,0 +1,746 @@
+{
+  "id": 1,
+  "title": "Akademie der Maße",
+  "chapter": "Kapitel 1 – Einleitung",
+  "world": "Akademie der Maße",
+  "intro": "Die Akademie der Maße ist in Aufruhr: Ein Golem aus fehlerhaften Messungen hat sich im Prüfungssaal eingenistet. Nur wer Größen, Einheiten und Messfehler beherrscht, kann ihn bannen. Sprich zuerst mit Magistra Mensura im Hörsaal (links oben).",
+  "mentor": {
+    "name": "Magistra Mensura",
+    "marker": "M",
+    "greeting": "Ah, der neue Lehrling! Hör gut zu – ohne saubere Einheiten verpufft hier jeder Zauber.",
+    "afterAll": "Du kennst jetzt alles, was du für den Golem brauchst. Das Tor zum Prüfungssaal öffnet sich, sobald du alle Prüfsteine der Akademie gemeistert hast.",
+    "lessons": [
+      {
+        "title": "Lektion 1: Größen und Einheiten",
+        "lines": [
+          "Jede physikalische Größe ist das Produkt aus einem Zahlenwert und einer Einheit – „13 dm²“ heißt 13 mal ein Quadratdezimeter.",
+          "Das SI-System ruht auf sieben Basiseinheiten: Meter, Kilogramm, Sekunde, Ampere, Kelvin, Mol und Candela.",
+          "Alle anderen Einheiten, etwa Newton oder Watt, sind daraus zusammengesetzt – man nennt sie abgeleitete Einheiten.",
+          "Vorsilben wie k (10³), m (10⁻³) oder µ (10⁻⁶) sind nur Zehnerpotenzen; bei dm² oder cm³ wird die Vorsilbe mitpotenziert!",
+          "Mit dem Zauber „Transmutatio“ verwandelst du jede Größe in SI-Einheiten."
+        ],
+        "unlocks": ["transmutatio"]
+      },
+      {
+        "title": "Lektion 2: Raten und zusammengesetzte Größen",
+        "lines": [
+          "Viele Größen in der Umwelt sind Raten: eine Menge pro Fläche und pro Zeit, etwa Niederschlag oder Verdunstung.",
+          "Rechne zuerst alle gegebenen Werte in SI-Einheiten um und setze erst dann ein – dann stimmt auch die Einheit des Ergebnisses von selbst.",
+          "Die Masse einer dünnen Schicht ist Dichte mal Volumen, und das Volumen ist Fläche mal Schichtdicke.",
+          "Kennst du eine Masse und den Massenstrom (Masse pro Zeit), so liefert ihr Quotient die benötigte Zeit."
+        ],
+        "unlocks": ["fluxus", "stratum", "tempus"]
+      },
+      {
+        "title": "Lektion 3: Skalare und Vektoren",
+        "lines": [
+          "Manche Größen sind mit Zahlenwert und Einheit vollständig beschrieben – das sind Skalare wie Masse, Zeit, Energie oder Temperatur.",
+          "Andere brauchen zusätzlich eine Richtung: Kraft, Geschwindigkeit oder Verschiebung sind Vektoren.",
+          "Stehen zwei Vektoren senkrecht aufeinander, so erhältst du den Betrag ihrer Summe mit dem Satz des Pythagoras.",
+          "Der Zauber „Vectoria“ berechnet genau das: |F| = √(Fₓ² + F_y²)."
+        ],
+        "unlocks": ["vectoria"]
+      },
+      {
+        "title": "Lektion 4: Messen heißt streuen",
+        "lines": [
+          "Keine Messung ist perfekt: Wiederholst du sie, streuen die Werte zufällig um einen mittleren Wert.",
+          "Der Mittelwert x̄ ist die Summe aller n Messwerte, geteilt durch n.",
+          "Die Standardabweichung σ beschreibt die Streuung: Wurzel aus der Summe der quadrierten Abweichungen vom Mittelwert, geteilt durch n − 1.",
+          "Sind die Werte gaußverteilt, liegen etwa 68,3 % in x̄ ± σ, 95,4 % in x̄ ± 2σ und 99,7 % in x̄ ± 3σ.",
+          "Mit diesem Wissen – und den Zaubern Medius, Sigma und Gaussia – kannst du den Messfehler-Golem bezwingen."
+        ],
+        "unlocks": ["medius", "sigma", "gaussia"]
+      }
+    ]
+  },
+  "merchant": {
+    "name": "Krämer Kilogrammus",
+    "marker": "H",
+    "greeting": "Willkommen, willkommen! Magische Ausrüstung für Leute, die rechnen können. Bezahlt wird in Gold, nicht in Ausreden."
+  },
+  "legend": {
+    "#": "wall",
+    ".": "floor",
+    ",": "grass",
+    "~": "water",
+    "T": "tree",
+    "b": "shelf",
+    "=": "door",
+    "G": "gate"
+  },
+  "map": [
+    "##############################",
+    "#bbbbbbbb#,,,,,,,,,,#bbbbbbbb#",
+    "#........#,,T,,,,T,,#........#",
+    "#...M....#,,,~~~~,,,#....2...#",
+    "#........#,,,~~~~,,,#........#",
+    "#...1....=,,,~~~~,,,=........#",
+    "#........#,,,,,,,,,,#........#",
+    "####=#####,,,,,,,,,,#####=####",
+    "#,,T,,,,,,,,,,,,,,,,,,,,,,T,,#",
+    "#,,,,,,,,T,,,,P,,,,,,,,,,,,,,#",
+    "#,,,,H,,,,,,,,,,,,,,,,,3,,,,,#",
+    "#,T,,,,,,,,,,,,,,,,,,,,,,,,T,#",
+    "####=#########G##########=####",
+    "#........##........##........#",
+    "#...4....##...X....##....5...#",
+    "#........##........##........#",
+    "#bbbbbbbb##,,T,,T,,##bbbbbbbb#",
+    "##############################"
+  ],
+  "spells": [
+    {
+      "id": "transmutatio",
+      "name": "Transmutatio",
+      "formula": "X (beliebige Einheit) → X (SI-Einheit)",
+      "expr": "X",
+      "description": "Verwandelt eine Größe in kohärente SI-Einheiten. Setze die Größe mit ihrer ursprünglichen Einheit ein und gib das Ergebnis in SI an.",
+      "vars": [{ "symbol": "X", "display": "X", "label": "Größe (mit Originaleinheit)", "unit": "*" }],
+      "result": { "display": "X", "label": "Größe in SI", "unit": "*" },
+      "manaCost": 3
+    },
+    {
+      "id": "fluxus",
+      "name": "Fluxus",
+      "formula": "q = m / (A · t)",
+      "expr": "m / (A * t)",
+      "description": "Massenstromdichte: Wie viel Masse pro Fläche und pro Zeit fließt (z. B. Niederschlag, Verdunstung, Deposition).",
+      "vars": [
+        { "symbol": "m", "display": "m", "label": "Masse", "unit": "kg" },
+        { "symbol": "A", "display": "A", "label": "Fläche", "unit": "m^2" },
+        { "symbol": "t", "display": "t", "label": "Zeit", "unit": "s" }
+      ],
+      "result": { "display": "q", "label": "Massenstromdichte", "unit": "kg/(m^2*s)" },
+      "manaCost": 5
+    },
+    {
+      "id": "stratum",
+      "name": "Stratum",
+      "formula": "m = ρ · A · d",
+      "expr": "rho * A * d",
+      "description": "Masse einer dünnen Schicht: Dichte mal Volumen, wobei das Volumen Fläche mal Schichtdicke ist.",
+      "vars": [
+        { "symbol": "rho", "display": "ρ", "label": "Dichte", "unit": "kg/m^3" },
+        { "symbol": "A", "display": "A", "label": "Fläche", "unit": "m^2" },
+        { "symbol": "d", "display": "d", "label": "Schichtdicke", "unit": "m" }
+      ],
+      "result": { "display": "m", "label": "Masse", "unit": "kg" },
+      "manaCost": 5
+    },
+    {
+      "id": "tempus",
+      "name": "Tempus Fluxus",
+      "formula": "t = m / ṁ",
+      "expr": "m / mdot",
+      "description": "Dauer eines Vorgangs aus Masse und Massenstrom (Masse pro Zeit).",
+      "vars": [
+        { "symbol": "m", "display": "m", "label": "Masse", "unit": "kg" },
+        { "symbol": "mdot", "display": "ṁ", "label": "Massenstrom", "unit": "kg/s" }
+      ],
+      "result": { "display": "t", "label": "Zeit", "unit": "s" },
+      "manaCost": 5
+    },
+    {
+      "id": "vectoria",
+      "name": "Vectoria",
+      "formula": "|F| = √(Fₓ² + F_y²)",
+      "expr": "sqrt(Fx^2 + Fy^2)",
+      "description": "Betrag eines Vektors aus zwei senkrechten Komponenten (Satz des Pythagoras). Beide Komponenten müssen dieselbe Dimension haben.",
+      "vars": [
+        { "symbol": "Fx", "display": "Fₓ", "label": "x-Komponente", "unit": "*" },
+        { "symbol": "Fy", "display": "F_y", "label": "y-Komponente", "unit": "*" }
+      ],
+      "result": { "display": "|F|", "label": "Betrag", "unit": "*" },
+      "manaCost": 4
+    },
+    {
+      "id": "medius",
+      "name": "Medius",
+      "formula": "x̄ = (x₁ + x₂ + … + xₙ) / n",
+      "expr": "mean(x)",
+      "description": "Arithmetischer Mittelwert einer Messreihe. Gib die Messwerte durch Strichpunkt getrennt ein.",
+      "vars": [{ "symbol": "x", "display": "xᵢ", "label": "Messwerte (mit ; trennen)", "unit": "*", "list": true }],
+      "result": { "display": "x̄", "label": "Mittelwert", "unit": "*" },
+      "manaCost": 4
+    },
+    {
+      "id": "sigma",
+      "name": "Sigma",
+      "formula": "σ = √( Σ(xᵢ − x̄)² / (n − 1) )",
+      "expr": "std(x)",
+      "description": "Standardabweichung einer Messreihe – ein Maß für die Streuung der Einzelwerte um den Mittelwert.",
+      "vars": [{ "symbol": "x", "display": "xᵢ", "label": "Messwerte (mit ; trennen)", "unit": "*", "list": true }],
+      "result": { "display": "σ", "label": "Standardabweichung", "unit": "*" },
+      "manaCost": 6
+    },
+    {
+      "id": "gaussia",
+      "name": "Gaussia",
+      "formula": "x = x̄ + z · σ",
+      "expr": "xm + z * s",
+      "description": "Grenze eines Vertrauensbereichs der Gauß-Verteilung. z = ±1 → 68,3 %, z = ±2 → 95,4 %, z = ±3 → 99,7 %.",
+      "vars": [
+        { "symbol": "xm", "display": "x̄", "label": "Mittelwert", "unit": "*" },
+        { "symbol": "z", "display": "z", "label": "Vielfaches von σ (mit Vorzeichen)", "unit": "1" },
+        { "symbol": "s", "display": "σ", "label": "Standardabweichung", "unit": "*" }
+      ],
+      "result": { "display": "x", "label": "Bereichsgrenze", "unit": "*" },
+      "manaCost": 4
+    }
+  ],
+  "tasks": [
+    {
+      "id": "l1-si-basis",
+      "type": "choice",
+      "title": "Die sieben Säulen",
+      "topic": "SI-System",
+      "story": "Auf der Tafel im Hörsaal leuchten vier Einheiten. Eine davon ist ein Hochstapler – sie gibt sich als Basiseinheit aus, ist aber aus anderen zusammengesetzt.",
+      "question": "Welche Einheit ist KEINE SI-Basiseinheit?",
+      "options": ["Kilogramm (kg)", "Ampere (A)", "Newton (N)", "Candela (cd)"],
+      "correct": 2,
+      "explanation": "Das Newton ist abgeleitet: 1 N = 1 kg·m/s². Die sieben Basiseinheiten sind m, kg, s, A, K, mol und cd.",
+      "hints": [
+        "Zähle die sieben Basiseinheiten auf: Länge, Masse, Zeit, Stromstärke, Temperatur, Stoffmenge, Lichtstärke.",
+        "Eine der vier Einheiten gehört zur Größe Kraft – und Kraft ist keine Basisgröße.",
+        "Newton = kg·m/s² ist abgeleitet. Lösung: Newton."
+      ],
+      "solutionSteps": ["Basiseinheiten: m, kg, s, A, K, mol, cd.", "N = kg·m·s⁻² ist daraus zusammengesetzt → keine Basiseinheit."],
+      "xp": 20,
+      "gold": 5
+    },
+    {
+      "id": "l1-groesse",
+      "type": "choice",
+      "title": "Die Anatomie einer Größe",
+      "topic": "SI-System",
+      "story": "Ein Studienkollege schreibt in sein Protokoll nur „Fläche = 13“. Die Tafel beginnt zu flackern.",
+      "question": "Woraus besteht eine physikalische Größe?",
+      "options": ["Zahlenwert × Einheit", "Formelzeichen + Messgerät", "nur aus dem Zahlenwert", "Einheit ÷ Zahlenwert"],
+      "correct": 0,
+      "explanation": "Eine Größe ist immer Zahlenwert × Einheit, z. B. A = 13 · dm². Ohne Einheit ist „13“ physikalisch bedeutungslos.",
+      "hints": [
+        "Was fehlt in „Fläche = 13“, damit man weiß, wie groß die Fläche ist?",
+        "13 m² und 13 mm² unterscheiden sich um den Faktor 10⁶ – nur die Einheit verrät das.",
+        "Größe = Zahlenwert × Einheit."
+      ],
+      "solutionSteps": ["A = 13 dm² bedeutet: Zahlenwert 13, Einheit dm², multipliziert."],
+      "xp": 20,
+      "gold": 5
+    },
+    {
+      "id": "l1-watt",
+      "type": "choice",
+      "title": "Watt entschlüsselt",
+      "topic": "Abgeleitete Einheiten",
+      "story": "Das Licht über der Tafel wird mit einem Watt-Zauber betrieben. Um ihn zu verstärken, musst du seine Basiseinheiten kennen.",
+      "question": "Wie lautet das Watt in SI-Basiseinheiten? (1 W = 1 J/s, 1 J = 1 N·m)",
+      "options": ["kg·m²·s⁻³", "kg·m·s⁻²", "kg·m²·s⁻²", "kg·m⁻¹·s⁻²"],
+      "correct": 0,
+      "explanation": "N = kg·m·s⁻², J = N·m = kg·m²·s⁻², W = J/s = kg·m²·s⁻³. (kg·m·s⁻² ist das Newton, kg·m⁻¹·s⁻² das Pascal.)",
+      "hints": [
+        "Baue Schritt für Schritt: zuerst das Newton aus F = m·a.",
+        "J = N·m bringt ein zusätzliches m, W = J/s ein zusätzliches s⁻¹.",
+        "kg·m·s⁻² · m · s⁻¹ = kg·m²·s⁻³."
+      ],
+      "solutionSteps": ["N = kg·m/s²", "J = N·m = kg·m²/s²", "W = J/s = kg·m²/s³"],
+      "xp": 25,
+      "gold": 6
+    },
+    {
+      "id": "l1-regen",
+      "type": "numeric",
+      "title": "Der Regenkristall",
+      "topic": "Abgeleitete Einheiten",
+      "story": "In der Bibliothek tropft es: Der Regenkristall sammelt in einer Stunde 112 g Regenwasser auf seiner Fläche von 13 dm². Er öffnet sich nur, wenn du die Regenmenge als Massenstromdichte in SI-Einheiten nennst.",
+      "question": "Wie groß ist die Regenmenge q in SI-Einheiten (kg/(m²·s))?",
+      "given": [
+        { "label": "Masse m", "value": "112", "unit": "g" },
+        { "label": "Fläche A", "value": "13", "unit": "dm²" },
+        { "label": "Zeit t", "value": "1", "unit": "h" }
+      ],
+      "spells": ["fluxus"],
+      "answer": { "value": 2.393e-4, "unit": "kg/(m^2*s)" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "fluxus", "inputs": { "m": "112 g", "A": "13 dm^2", "t": "1 h" } },
+      "commonMistakes": [
+        { "value": 0.8615, "unit": "kg/(m^2*s)", "feedback": "Fast! Du hast die Stunde nicht in Sekunden umgerechnet: 1 h = 3600 s." },
+        { "value": 2.393e-5, "unit": "kg/(m^2*s)", "feedback": "Achtung bei dm²: 1 dm = 10⁻¹ m, also 1 dm² = 10⁻² m² (nicht 10⁻¹ m²)." }
+      ],
+      "hints": [
+        "Gesucht ist Masse pro Fläche und pro Zeit – der Zauber Fluxus passt.",
+        "Rechne um: 112 g = 0,112 kg; 13 dm² = 13 · 10⁻² m² = 0,13 m²; 1 h = 3600 s.",
+        "q = 0,112 kg / (0,13 m² · 3600 s) = 2,39 · 10⁻⁴ kg/(m²·s)"
+      ],
+      "solutionSteps": [
+        "m = 112 g = 0,112 kg",
+        "A = 13 dm² = 13 · (10⁻¹ m)² = 0,13 m²",
+        "t = 1 h = 3600 s",
+        "q = m / (A · t) = 0,112 / (0,13 · 3600) kg/(m²·s) = 2,39 · 10⁻⁴ kg/(m²·s)"
+      ],
+      "xp": 50,
+      "gold": 12
+    },
+    {
+      "id": "l1-conv-ha",
+      "type": "numeric",
+      "title": "Kobold-Frage 1: Hektar",
+      "topic": "Einheiten umrechnen",
+      "story": "Der Vorsilben-Kobold kichert: „Mein Revier ist 215 ha groß! Sag mir das in SI – oder ich zwicke dich!“",
+      "question": "Rechne 215 ha in m² um.",
+      "given": [{ "label": "Fläche", "value": "215", "unit": "ha" }, { "label": "Umrechnung", "value": "1 ha = 100 m · 100 m", "unit": "" }],
+      "spells": ["transmutatio"],
+      "answer": { "value": 2.15e6, "unit": "m^2" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "transmutatio", "inputs": { "X": "215 ha" } },
+      "hints": [
+        "Ein Hektar ist ein Quadrat mit 100 m Seitenlänge.",
+        "1 ha = 10⁴ m², also 215 ha = 215 · 10⁴ m².",
+        "215 ha = 2,15 · 10⁶ m²"
+      ],
+      "solutionSteps": ["1 ha = (100 m)² = 10⁴ m²", "215 ha = 215 · 10⁴ m² = 2,15 · 10⁶ m²"],
+      "xp": 30,
+      "gold": 8
+    },
+    {
+      "id": "l1-conv-kpm",
+      "type": "numeric",
+      "title": "Kobold-Frage 2: Kilopondmeter",
+      "topic": "Einheiten umrechnen",
+      "story": "„Mein Lieblingshebel leistet 11 kpm Arbeit! Uralte Einheit, was? Wie viel ist das in SI?“",
+      "question": "Rechne 11 kpm in Joule um (1 kp = 9,81 N).",
+      "given": [{ "label": "Arbeit", "value": "11", "unit": "kpm" }, { "label": "Umrechnung", "value": "1 kp = 9,81 N", "unit": "" }],
+      "spells": ["transmutatio"],
+      "answer": { "value": 107.91, "unit": "J" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "transmutatio", "inputs": { "X": "11 kpm" } },
+      "hints": [
+        "kpm bedeutet Kilopond mal Meter – also Kraft mal Weg.",
+        "11 kpm = 11 · 9,81 N · 1 m, und N·m = J.",
+        "11 · 9,81 J = 107,9 J"
+      ],
+      "solutionSteps": ["1 kpm = 9,81 N · 1 m = 9,81 J", "11 kpm = 11 · 9,81 J = 107,9 J"],
+      "xp": 30,
+      "gold": 8
+    },
+    {
+      "id": "l1-conv-mwh",
+      "type": "numeric",
+      "title": "Kobold-Frage 3: Megawattstunden",
+      "topic": "Einheiten umrechnen",
+      "story": "„Die Akademie hat letztes Jahr 223 MWh verheizt. Sag's mir in Joule!“",
+      "question": "Rechne 223 MWh in Joule um.",
+      "given": [{ "label": "Energie", "value": "223", "unit": "MWh" }],
+      "spells": ["transmutatio"],
+      "answer": { "value": 8.028e11, "unit": "J" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "transmutatio", "inputs": { "X": "223 MWh" } },
+      "hints": [
+        "Wh heißt Watt mal Stunde, und W·s = J.",
+        "1 MWh = 10⁶ W · 3600 s = 3,6 · 10⁹ J.",
+        "223 · 3,6 · 10⁹ J = 8,03 · 10¹¹ J"
+      ],
+      "solutionSteps": ["1 MWh = 10⁶ W · 3600 s = 3,6 · 10⁹ J", "223 MWh = 223 · 3,6 · 10⁹ J = 8,03 · 10¹¹ J"],
+      "xp": 30,
+      "gold": 8
+    },
+    {
+      "id": "l1-conv-nmjahr",
+      "type": "numeric",
+      "title": "Kobold-Frage 4: Nanometer pro Jahr",
+      "topic": "Einheiten umrechnen",
+      "story": "„Die Gletscherkante vor der Akademie wandert 230 nm pro Jahr. Langsam, aber stetig! Wie schnell in SI?“",
+      "question": "Rechne 230 nm/Jahr in m/s um (1 Jahr = 365 Tage).",
+      "given": [{ "label": "Geschwindigkeit", "value": "230", "unit": "nm/Jahr" }],
+      "spells": ["transmutatio"],
+      "answer": { "value": 7.293e-15, "unit": "m/s" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "transmutatio", "inputs": { "X": "230 nm/Jahr" } },
+      "hints": [
+        "Zähler und Nenner getrennt umrechnen: nm in m, Jahr in s.",
+        "230 nm = 2,3 · 10⁻⁷ m; 1 Jahr = 365 · 24 · 3600 s = 3,15 · 10⁷ s.",
+        "2,3 · 10⁻⁷ m / 3,15 · 10⁷ s = 7,29 · 10⁻¹⁵ m/s"
+      ],
+      "solutionSteps": ["230 nm = 230 · 10⁻⁹ m = 2,3 · 10⁻⁷ m", "1 Jahr = 365 · 86 400 s = 3,154 · 10⁷ s", "v = 2,3 · 10⁻⁷ m / 3,154 · 10⁷ s = 7,29 · 10⁻¹⁵ m/s"],
+      "xp": 35,
+      "gold": 9
+    },
+    {
+      "id": "l1-conv-kcal",
+      "type": "numeric",
+      "title": "Kobold-Frage 5: Kilokalorien pro Minute",
+      "topic": "Einheiten umrechnen",
+      "story": "Letzter Trick des Kobolds: „Beim Wegrennen verbrenne ich 25 kcal pro Minute! Welche Leistung ist das?“",
+      "question": "Rechne 25 kcal/min in Watt um (1 kcal = 4200 J).",
+      "given": [{ "label": "Leistung", "value": "25", "unit": "kcal/min" }, { "label": "Umrechnung", "value": "1 kcal = 4200 J", "unit": "" }],
+      "spells": ["transmutatio"],
+      "answer": { "value": 1750, "unit": "W" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "transmutatio", "inputs": { "X": "25 kcal/min" } },
+      "hints": [
+        "Energie pro Zeit ist Leistung: J/s = W.",
+        "25 kcal = 25 · 4200 J = 105 000 J; 1 min = 60 s.",
+        "105 000 J / 60 s = 1750 W"
+      ],
+      "solutionSteps": ["25 kcal = 25 · 4200 J = 1,05 · 10⁵ J", "1 min = 60 s", "P = 1,05 · 10⁵ J / 60 s = 1750 W"],
+      "xp": 35,
+      "gold": 9
+    },
+    {
+      "id": "l1-gold-masse",
+      "type": "numeric",
+      "title": "Goldschicht a) – die Masse",
+      "topic": "Abgeleitete Einheiten",
+      "story": "In der Goldenen Werkstatt soll ein Zauberamulett mit einer Fläche von 25 mm² mit einer 3 nm dünnen Goldschicht bedampft werden. Gold hat die Dichte ρ = 19,3 g/cm³.",
+      "question": "Wie viel Gold (Masse m) wird benötigt? Gib das Ergebnis z. B. in µg oder kg an.",
+      "given": [
+        { "label": "Fläche A", "value": "25", "unit": "mm²" },
+        { "label": "Schichtdicke d", "value": "3", "unit": "nm" },
+        { "label": "Dichte ρ (Gold)", "value": "19,3", "unit": "g/cm³" }
+      ],
+      "spells": ["stratum"],
+      "answer": { "value": 1.4475e-9, "unit": "kg" },
+      "tolerance": 0.01,
+      "solution": { "spell": "stratum", "inputs": { "rho": "19.3 g/cm^3", "A": "25 mm^2", "d": "3 nm" } },
+      "hints": [
+        "Masse = Dichte · Volumen, und das Volumen der Schicht ist Fläche · Dicke.",
+        "SI: A = 25 · 10⁻⁶ m², d = 3 · 10⁻⁹ m, ρ = 19,3 g/cm³ = 19 300 kg/m³.",
+        "m = 19 300 kg/m³ · 7,5 · 10⁻¹⁴ m³ = 1,45 · 10⁻⁹ kg = 1,45 µg"
+      ],
+      "solutionSteps": [
+        "A = 25 mm² = 25 · (10⁻³ m)² = 2,5 · 10⁻⁵ m²",
+        "d = 3 nm = 3 · 10⁻⁹ m → V = A · d = 7,5 · 10⁻¹⁴ m³",
+        "ρ = 19,3 g/cm³ = 19,3 · 10⁻³ kg / 10⁻⁶ m³ = 1,93 · 10⁴ kg/m³",
+        "m = ρ · V = 1,45 · 10⁻⁹ kg = 1,45 µg"
+      ],
+      "xp": 50,
+      "gold": 12
+    },
+    {
+      "id": "l1-gold-rate",
+      "type": "numeric",
+      "title": "Goldschicht b) – die Verdampfungsrate",
+      "topic": "Einheiten umrechnen",
+      "story": "Der Verdampfer der Werkstatt schafft 200 µg Gold pro Stunde. Für die Zeitberechnung brauchst du diesen Massenstrom in SI.",
+      "question": "Rechne 200 µg/h in kg/s um.",
+      "given": [{ "label": "Massenstrom ṁ", "value": "200", "unit": "µg/h" }],
+      "spells": ["transmutatio"],
+      "answer": { "value": 5.556e-11, "unit": "kg/s" },
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": { "spell": "transmutatio", "inputs": { "X": "200 µg/h" } },
+      "hints": [
+        "µ steht für 10⁻⁶, und Gramm ist noch nicht Kilogramm.",
+        "200 µg = 200 · 10⁻⁹ kg = 2 · 10⁻⁷ kg; 1 h = 3600 s.",
+        "2 · 10⁻⁷ kg / 3600 s = 5,56 · 10⁻¹¹ kg/s"
+      ],
+      "solutionSteps": ["200 µg = 200 · 10⁻⁶ g = 2 · 10⁻⁴ g = 2 · 10⁻⁷ kg", "ṁ = 2 · 10⁻⁷ kg / 3600 s = 5,56 · 10⁻¹¹ kg/s"],
+      "xp": 35,
+      "gold": 9
+    },
+    {
+      "id": "l1-gold-zeit",
+      "type": "numeric",
+      "title": "Goldschicht c) – die Dauer",
+      "topic": "Abgeleitete Einheiten",
+      "story": "Jetzt fügst du beide Ergebnisse zusammen: die benötigte Goldmasse aus a) und den Massenstrom aus b).",
+      "question": "Wie lange dauert das Aufdampfen (in s)?",
+      "given": [
+        { "label": "Masse m (aus a)", "value": "1,45", "unit": "µg" },
+        { "label": "Massenstrom ṁ (aus b)", "value": "5,56 · 10⁻¹¹", "unit": "kg/s" }
+      ],
+      "spells": ["tempus"],
+      "answer": { "value": 26.05, "unit": "s" },
+      "tolerance": 0.01,
+      "solution": { "spell": "tempus", "inputs": { "m": "1.4475 µg", "mdot": "200 µg/h" } },
+      "hints": [
+        "Zeit = Masse / Massenstrom.",
+        "Beide in SI: m = 1,45 · 10⁻⁹ kg, ṁ = 5,56 · 10⁻¹¹ kg/s.",
+        "t = 1,45 · 10⁻⁹ / 5,56 · 10⁻¹¹ s ≈ 26 s"
+      ],
+      "solutionSteps": ["t = m / ṁ", "t = 1,4475 · 10⁻⁹ kg / 5,556 · 10⁻¹¹ kg/s = 26 s"],
+      "xp": 40,
+      "gold": 10
+    },
+    {
+      "id": "l1-vektor-wahl",
+      "type": "choice",
+      "title": "Pfeil oder Punkt?",
+      "topic": "Skalare und Vektoren",
+      "story": "In der Pfeilhalle schweben vier Runen. Nur eine trägt einen Richtungspfeil.",
+      "question": "Welche dieser Größen ist ein Vektor?",
+      "options": ["Masse", "Temperatur", "Geschwindigkeit", "Energie"],
+      "correct": 2,
+      "explanation": "Die Geschwindigkeit hat Betrag UND Richtung – sie ist ein Vektor. Masse, Temperatur und Energie sind Skalare.",
+      "hints": [
+        "Bei welcher Größe ist es wichtig, WOHIN sie zeigt?",
+        "„5 kg nach Norden“ ergibt keinen Sinn, „5 m/s nach Norden“ schon.",
+        "Geschwindigkeit ist der Vektor."
+      ],
+      "solutionSteps": ["Vektor = Betrag + Richtung.", "Nur die Geschwindigkeit braucht eine Richtungsangabe."],
+      "xp": 20,
+      "gold": 5
+    },
+    {
+      "id": "l1-vektor-kraft",
+      "type": "numeric",
+      "title": "Zwei Seile, eine Kraft",
+      "topic": "Skalare und Vektoren",
+      "story": "Zwei Gehilfen ziehen an einer magischen Truhe: einer mit 30 N nach Osten, der andere mit 40 N nach Norden. Die Truhe bewegt sich nur, wenn du den Betrag der Gesamtkraft richtig nennst.",
+      "question": "Wie groß ist der Betrag der resultierenden Kraft?",
+      "given": [
+        { "label": "Fₓ (Osten)", "value": "30", "unit": "N" },
+        { "label": "F_y (Norden)", "value": "40", "unit": "N" }
+      ],
+      "spells": ["vectoria"],
+      "answer": { "value": 50, "unit": "N" },
+      "tolerance": 0.01,
+      "solution": { "spell": "vectoria", "inputs": { "Fx": "30 N", "Fy": "40 N" } },
+      "commonMistakes": [
+        { "value": 70, "unit": "N", "feedback": "Vektoren darf man nur addieren, wenn sie in dieselbe Richtung zeigen. Hier stehen sie senkrecht – nimm Pythagoras!" }
+      ],
+      "hints": [
+        "Die Kräfte stehen senkrecht aufeinander – sie bilden die Katheten eines rechtwinkligen Dreiecks.",
+        "|F| = √(30² + 40²) N",
+        "√(900 + 1600) N = √2500 N = 50 N"
+      ],
+      "solutionSteps": ["|F| = √(Fₓ² + F_y²)", "|F| = √(30² + 40²) N = √2500 N = 50 N"],
+      "xp": 40,
+      "gold": 10
+    },
+    {
+      "id": "l1-vektor-weg",
+      "type": "numeric",
+      "title": "Strecke oder Verschiebung?",
+      "topic": "Skalare und Vektoren",
+      "story": "Ein Bote läuft 300 m nach Osten und dann 150 m nach Süden. Das Orakel will wissen, wie weit er vom Startpunkt entfernt ist – nicht, wie weit er gelaufen ist.",
+      "question": "Wie groß ist der Betrag der Verschiebung?",
+      "given": [
+        { "label": "Weg nach Osten", "value": "300", "unit": "m" },
+        { "label": "Weg nach Süden", "value": "150", "unit": "m" }
+      ],
+      "spells": ["vectoria"],
+      "answer": { "value": 335.41, "unit": "m" },
+      "tolerance": 0.01,
+      "solution": { "spell": "vectoria", "inputs": { "Fx": "300 m", "Fy": "150 m" } },
+      "commonMistakes": [
+        { "value": 450, "unit": "m", "feedback": "450 m ist die zurückgelegte Strecke (ein Skalar). Gefragt ist der Betrag der Verschiebung – Pythagoras!" }
+      ],
+      "hints": [
+        "Die Verschiebung ist der Pfeil vom Start zum Ziel – nicht der gelaufene Weg.",
+        "Osten und Süden stehen senkrecht: |s| = √(300² + 150²) m.",
+        "√(90 000 + 22 500) m = √112 500 m ≈ 335 m"
+      ],
+      "solutionSteps": ["|s| = √(sₓ² + s_y²)", "|s| = √(300² + 150²) m = 335 m (die gelaufene Strecke wäre 450 m)"],
+      "xp": 40,
+      "gold": 10
+    },
+    {
+      "id": "l1-golem-mittel",
+      "type": "numeric",
+      "title": "Golem: Der Mittelwert",
+      "topic": "Messfehler & Statistik",
+      "story": "Der Messfehler-Golem lässt einen Stein fallen und stoppt fünfmal die Fallzeit: 2,43 s; 2,51 s; 2,47 s; 2,39 s; 2,45 s. „Nenne meinen wahren Kern!“, dröhnt er.",
+      "question": "Berechne den Mittelwert x̄ der Fallzeiten.",
+      "given": [{ "label": "Messwerte", "value": "2,43; 2,51; 2,47; 2,39; 2,45", "unit": "s" }],
+      "spells": ["medius"],
+      "answer": { "value": 2.45, "unit": "s" },
+      "tolerance": 0.002,
+      "solution": { "spell": "medius", "inputs": { "x": "2.43; 2.51; 2.47; 2.39; 2.45 s" } },
+      "hints": [
+        "Mittelwert = Summe aller Werte / Anzahl.",
+        "Summe = 12,25 s, n = 5.",
+        "x̄ = 12,25 s / 5 = 2,45 s"
+      ],
+      "solutionSteps": ["Σxᵢ = 2,43 + 2,51 + 2,47 + 2,39 + 2,45 = 12,25 s", "x̄ = 12,25 s / 5 = 2,45 s"],
+      "xp": 60,
+      "gold": 15
+    },
+    {
+      "id": "l1-golem-sigma",
+      "type": "numeric",
+      "title": "Golem: Die Streuung",
+      "topic": "Messfehler & Statistik",
+      "story": "Der Golem wankt, aber seine Rüstung aus Streuwerten hält noch. Nur die exakte Standardabweichung durchdringt sie.",
+      "question": "Berechne die Standardabweichung σ der fünf Fallzeiten.",
+      "given": [
+        { "label": "Messwerte", "value": "2,43; 2,51; 2,47; 2,39; 2,45", "unit": "s" },
+        { "label": "Mittelwert x̄", "value": "2,45", "unit": "s" }
+      ],
+      "spells": ["sigma"],
+      "answer": { "value": 0.04472, "unit": "s" },
+      "tolerance": 0.01,
+      "solution": { "spell": "sigma", "inputs": { "x": "2.43; 2.51; 2.47; 2.39; 2.45 s" } },
+      "commonMistakes": [
+        { "value": 0.04, "unit": "s", "feedback": "Du hast durch n = 5 geteilt. Für die Standardabweichung einer Messreihe teilt man durch n − 1 = 4." },
+        { "value": 0.002, "unit": "s", "feedback": "Das ist σ² (die Varianz, Einheit eigentlich s²). Zieh noch die Wurzel!" }
+      ],
+      "hints": [
+        "Berechne für jeden Wert die Abweichung vom Mittelwert 2,45 s und quadriere sie.",
+        "Abweichungen: −0,02; 0,06; 0,02; −0,06; 0 → Quadratsumme = 0,0080 s². Teile durch n − 1 = 4.",
+        "σ = √(0,0080 s² / 4) = √0,0020 s² = 0,0447 s"
+      ],
+      "solutionSteps": [
+        "Abweichungen xᵢ − x̄: −0,02; +0,06; +0,02; −0,06; 0,00 s",
+        "Quadrate: 0,0004; 0,0036; 0,0004; 0,0036; 0 → Summe 0,0080 s²",
+        "σ = √(0,0080 / (5 − 1)) s = √0,0020 s = 0,0447 s"
+      ],
+      "xp": 80,
+      "gold": 20
+    },
+    {
+      "id": "l1-golem-683",
+      "type": "choice",
+      "title": "Golem: Die Glocke",
+      "topic": "Messfehler & Statistik",
+      "story": "Der Golem formt aus seinen Messwerten eine riesige Glockenkurve. „Wie viele meiner Werte liegen innerhalb von EINER Standardabweichung um den Mittelwert?“",
+      "question": "Welcher Anteil einer Gauß-Verteilung liegt im Bereich x̄ ± σ?",
+      "options": ["50,0 %", "68,3 %", "95,4 %", "99,7 %"],
+      "correct": 1,
+      "explanation": "x̄ ± 1σ → 68,3 %, x̄ ± 2σ → 95,4 %, x̄ ± 3σ → 99,7 %.",
+      "hints": [
+        "Es ist etwa zwei Drittel.",
+        "95,4 % gehört zu ±2σ, 99,7 % zu ±3σ.",
+        "68,3 %"
+      ],
+      "solutionSteps": ["Gauß-Verteilung: ±1σ ≈ 68,3 %, ±2σ ≈ 95,4 %, ±3σ ≈ 99,7 %."],
+      "xp": 40,
+      "gold": 10
+    },
+    {
+      "id": "l1-golem-unten",
+      "type": "numeric",
+      "title": "Golem: Die untere Grenze",
+      "topic": "Messfehler & Statistik",
+      "story": "Der Golem spaltet sich: „Nenne den Bereich, in dem 95,4 % aller Fallzeiten liegen – beginnend mit seiner unteren Grenze!“",
+      "question": "Wie groß ist die untere Grenze des 95,4-%-Bereichs?",
+      "given": [
+        { "label": "Mittelwert x̄", "value": "2,45", "unit": "s" },
+        { "label": "Standardabweichung σ", "value": "0,0447", "unit": "s" }
+      ],
+      "spells": ["gaussia"],
+      "answer": { "value": 2.3606, "unit": "s" },
+      "tolerance": 0.002,
+      "solution": { "spell": "gaussia", "inputs": { "xm": "2.45 s", "z": "-2", "s": "0.044721 s" } },
+      "commonMistakes": [
+        { "value": 2.4053, "unit": "s", "feedback": "Das ist x̄ − 1σ (68,3 %). Für 95,4 % brauchst du z = −2." },
+        { "value": 2.3158, "unit": "s", "feedback": "Das ist x̄ − 3σ (99,7 %). Für 95,4 % brauchst du z = −2." }
+      ],
+      "hints": [
+        "95,4 % entspricht dem Bereich x̄ ± 2σ.",
+        "Untere Grenze: z = −2.",
+        "x = 2,45 s − 2 · 0,0447 s = 2,361 s"
+      ],
+      "solutionSteps": ["95,4 % ↔ z = ±2", "x_unten = x̄ − 2σ = 2,45 s − 0,0894 s = 2,361 s"],
+      "xp": 70,
+      "gold": 18
+    },
+    {
+      "id": "l1-golem-oben",
+      "type": "numeric",
+      "title": "Golem: Die obere Grenze",
+      "topic": "Messfehler & Statistik",
+      "story": "Ein letzter Riss zieht sich durch den Golem. Vollende den Bannkreis mit der oberen Grenze!",
+      "question": "Wie groß ist die obere Grenze des 95,4-%-Bereichs?",
+      "given": [
+        { "label": "Mittelwert x̄", "value": "2,45", "unit": "s" },
+        { "label": "Standardabweichung σ", "value": "0,0447", "unit": "s" }
+      ],
+      "spells": ["gaussia"],
+      "answer": { "value": 2.5394, "unit": "s" },
+      "tolerance": 0.002,
+      "solution": { "spell": "gaussia", "inputs": { "xm": "2.45 s", "z": "2", "s": "0.044721 s" } },
+      "hints": [
+        "Jetzt z = +2.",
+        "x = x̄ + 2σ",
+        "x = 2,45 s + 0,0894 s = 2,539 s"
+      ],
+      "solutionSteps": ["x_oben = x̄ + 2σ = 2,45 s + 0,0894 s = 2,539 s", "Ergebnis: 95,4 % der Fallzeiten liegen zwischen 2,36 s und 2,54 s."],
+      "xp": 90,
+      "gold": 25
+    }
+  ],
+  "encounters": [
+    {
+      "id": "l1-e-tafel",
+      "marker": "1",
+      "kind": "crystal",
+      "name": "Tafel der Größen",
+      "lesson": 1,
+      "intro": "Die schwarze Tafel im Hörsaal beginnt zu glühen. Drei Fragen erscheinen in Kreideschrift.",
+      "outro": "Die Tafel verblasst zufrieden. Die Grundlagen sitzen!",
+      "tasks": ["l1-groesse", "l1-si-basis", "l1-watt"]
+    },
+    {
+      "id": "l1-e-regen",
+      "marker": "2",
+      "kind": "crystal",
+      "name": "Regenkristall",
+      "lesson": 2,
+      "intro": "Ein bläulicher Kristall, umgeben von einer kleinen Regenwolke. Auf seinem Sockel steht: „Nenne meine Gabe in SI.“",
+      "outro": "Der Kristall öffnet sich und die Wolke löst sich in einen Regenbogen auf.",
+      "tasks": ["l1-regen"]
+    },
+    {
+      "id": "l1-e-kobold",
+      "marker": "3",
+      "kind": "monster",
+      "name": "Vorsilben-Kobold",
+      "lesson": 1,
+      "intro": "Ein grinsender Kobold springt dir in den Weg! Er jongliert mit Vorsilben und alten Einheiten.",
+      "outro": "Der Kobold schrumpft auf Nano-Größe und verschwindet zwischen den Pflastersteinen.",
+      "tasks": ["l1-conv-ha", "l1-conv-kpm", "l1-conv-mwh", "l1-conv-nmjahr", "l1-conv-kcal"],
+      "monster": { "name": "Vorsilben-Kobold", "hp": 100, "attack": 8, "color": "#5fbf4f" }
+    },
+    {
+      "id": "l1-e-gold",
+      "marker": "4",
+      "kind": "crystal",
+      "name": "Goldene Werkstatt",
+      "lesson": 2,
+      "intro": "Auf der Werkbank liegt ein unvollendetes Amulett. Daneben ein Vakuum-Verdampfer und ein Zettel: „Bedampfen – drei Schritte“.",
+      "outro": "Das Amulett glänzt golden. Drei verkettete Zauber – gut gemacht!",
+      "tasks": ["l1-gold-masse", "l1-gold-rate", "l1-gold-zeit"]
+    },
+    {
+      "id": "l1-e-pfeil",
+      "marker": "5",
+      "kind": "crystal",
+      "name": "Pfeil-Orakel",
+      "lesson": 3,
+      "intro": "Die Pfeilhalle ist voller schwebender Pfeile. Ein Orakel flüstert: „Betrag allein genügt nicht immer…“",
+      "outro": "Alle Pfeile richten sich auf dich aus und verneigen sich.",
+      "tasks": ["l1-vektor-wahl", "l1-vektor-kraft", "l1-vektor-weg"]
+    },
+    {
+      "id": "l1-e-golem",
+      "marker": "X",
+      "kind": "boss",
+      "name": "Messfehler-Golem",
+      "lesson": 4,
+      "intro": "Der Boden bebt. Aus verschütteten Messprotokollen erhebt sich der Messfehler-Golem. Er ist nur verwundbar, wenn du seine Streuung exakt bestimmst!",
+      "outro": "Der Golem zerfällt zu einer ordentlich ausgewerteten Messreihe. Die Akademie ist gerettet!",
+      "tasks": ["l1-golem-mittel", "l1-golem-sigma", "l1-golem-683", "l1-golem-unten", "l1-golem-oben"],
+      "monster": { "name": "Messfehler-Golem", "hp": 250, "attack": 12, "color": "#8a7a6a" }
+    }
+  ],
+  "flashcards": [
+    { "id": "l1-c-mol", "q": "Welche SI-Basiseinheit gehört zur Stoffmenge?", "options": ["kg", "mol", "cd", "K"], "correct": 1, "explain": "Stoffmenge → Mol (mol)." },
+    { "id": "l1-c-dm2", "q": "1 dm² = ? m²", "options": ["10⁻¹ m²", "10⁻² m²", "10⁻³ m²", "10² m²"], "correct": 1, "explain": "(10⁻¹ m)² = 10⁻² m² – die Vorsilbe wird mitquadriert." },
+    { "id": "l1-c-cm3", "q": "1 cm³ = ? m³", "options": ["10⁻² m³", "10⁻³ m³", "10⁻⁶ m³", "10⁻⁹ m³"], "correct": 2, "explain": "(10⁻² m)³ = 10⁻⁶ m³." },
+    { "id": "l1-c-newton", "q": "1 N in SI-Basiseinheiten?", "options": ["kg·m/s", "kg·m/s²", "kg·m²/s²", "kg/(m·s²)"], "correct": 1, "explain": "F = m·a → kg·m/s²." },
+    { "id": "l1-c-vektor", "q": "Welche Größe ist ein Vektor?", "options": ["Masse", "Energie", "Kraft", "Temperatur"], "correct": 2, "explain": "Kraft hat Betrag und Richtung." },
+    { "id": "l1-c-2sigma", "q": "Welcher Anteil einer Gauß-Verteilung liegt in x̄ ± 2σ?", "options": ["68,3 %", "90,0 %", "95,4 %", "99,7 %"], "correct": 2, "explain": "±1σ: 68,3 %, ±2σ: 95,4 %, ±3σ: 99,7 %." },
+    { "id": "l1-c-mikro", "q": "Die Vorsilbe µ (Mikro) bedeutet …", "options": ["10⁻³", "10⁻⁶", "10⁻⁹", "10⁶"], "correct": 1, "explain": "µ = 10⁻⁶, n = 10⁻⁹, m = 10⁻³." },
+    { "id": "l1-c-kwh", "q": "1 kWh = ?", "options": ["3,6 · 10³ J", "3,6 · 10⁶ J", "10³ J", "6 · 10⁴ J"], "correct": 1, "explain": "1000 W · 3600 s = 3,6 · 10⁶ J." },
+    { "id": "l1-c-nminus1", "q": "Bei der Standardabweichung einer Messreihe teilt man die Quadratsumme durch …", "options": ["n", "n − 1", "n²", "√n"], "correct": 1, "explain": "σ = √(Σ(xᵢ − x̄)² / (n − 1))." },
+    { "id": "l1-c-watt", "q": "1 W = ?", "options": ["1 J·s", "1 N/m", "1 J/s", "1 N·s"], "correct": 2, "explain": "Leistung = Energie pro Zeit: 1 W = 1 J/s." }
+  ],
+  "bossVictory": "Mit einem letzten, sauber berechneten Bannkreis zerfällt der Messfehler-Golem. Magistra Mensura überreicht dir das Siegel der Maße – das Tor zu den Windpfaden (Level 2) ist nun offen."
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "wand",
+    "name": "Zauberstab der Vorsilben",
+    "price": 40,
+    "description": "Ein Stab aus Zehnerpotenzen. Zeigt beim Zaubern die Vorsilben-Tafel und rechnet jede eingegebene Einheit live in SI um.",
+    "effect": "Vorsilben-Tafel + Umrechnungsfaktor beim Zaubern"
+  },
+  {
+    "id": "glasses",
+    "name": "Brille der Dimensionen",
+    "price": 70,
+    "description": "Durch diese Gläser siehst du, aus welchen SI-Basiseinheiten eine Eingabe besteht – noch bevor du zauberst.",
+    "effect": "zeigt die SI-Basiseinheiten jeder Eingabe"
+  },
+  {
+    "id": "robe",
+    "name": "Robe der Gelassenheit",
+    "price": 90,
+    "description": "Ein weiter, beruhigender Umhang. Der erste Fehlversuch in jedem Kampf kostet weder Mana noch Lebenspunkte.",
+    "effect": "1 Fehlversuch pro Kampf ohne Verlust"
+  },
+  {
+    "id": "amulet",
+    "name": "Amulett der Konstanten",
+    "price": 60,
+    "description": "Im Inneren schimmern die Naturkonstanten. Öffnet im Grimoire die Tafel der Konstanten (c, h, e, k_B, N_A, g …).",
+    "effect": "Konstanten-Tafel im Grimoire"
+  }
+]
