@@ -67,6 +67,7 @@ input[type=text]:focus { border-color: var(--accent); outline: none; }
 .rank { color: var(--gold); font-size: 13px; }
 .hud-bars { display: flex; gap: 8px; align-items: center; }
 .gold { color: var(--gold); font-weight: 600; }
+.due { color: #f0a35e; font-weight: 600; font-size: 13px; }
 .hud-buttons { display: flex; gap: 6px; margin-left: auto; }
 .hud-buttons button { padding: 4px 10px; box-shadow: none; }
 

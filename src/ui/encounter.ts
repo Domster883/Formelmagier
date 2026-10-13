@@ -29,9 +29,13 @@ import { openFlashcards } from './flashcards';
 const HELP_XP = [1, 0.8, 0.6, 0.25];
 const FAIL_MANA = 3;
 
+type Mode = 'normal' | 'training' | 'review';
+
 interface Session {
   level: LevelData;
   enc: Encounter;
+  mode: Mode;
+  /** schon gelöst (Training/Wiederholung): kein Fortschritt, weniger Belohnung */
   training: boolean;
   queue: Task[];
   monsterHp: number;
@@ -40,8 +44,10 @@ interface Session {
   onFinish: (won: boolean) => void;
 }
 
-export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: boolean) => void) {
-  const training = game.isEncounterDone(enc.id);
+export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: boolean) => void, forceMode?: Mode) {
+  const mode: Mode = forceMode ?? (game.isEncounterDone(enc.id) ? 'training' : 'normal');
+  const training = mode !== 'normal';
+  if (training) game.advanceTaskRound();
   const all = enc.tasks.map((id) => level.tasks.find((t) => t.id === id)!);
   const queue = training ? all : all.filter((t) => !game.isTaskDone(t.id));
   const max = enc.monster?.hp ?? 0;
@@ -49,6 +55,7 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
   const s: Session = {
     level,
     enc,
+    mode,
     training,
     queue,
     monsterMax: max,
@@ -58,7 +65,7 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
   };
   let won = false;
   const modal = openModal({
-    title: enc.name + (training ? ' (Training)' : ''),
+    title: enc.name + (mode === 'training' ? ' (Training)' : ''),
     wide: true,
     className: `encounter kind-${enc.kind}`,
     onClose: () => onFinish(won),
@@ -98,6 +105,7 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
     won = true;
     if (!s.training) {
       game.completeEncounter(enc.id);
+      game.advanceTaskRound();
       if (enc.kind === 'boss' && !game.data.bossDefeated.includes(level.id)) game.data.bossDefeated.push(level.id);
     }
     game.save();
@@ -141,7 +149,8 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
   // Intro
   content.append(
     h('p', { class: 'story' }, enc.intro),
-    s.training ? h('p', { class: 'note' }, 'Training: Du hast diese Begegnung schon gemeistert. Es gibt nur 25 % XP und kein Gold.') : '',
+    mode === 'training' ? h('p', { class: 'note' }, 'Training: Du hast diese Begegnung schon gemeistert. Es gibt nur 25 % XP und kein Gold – aber jede Wiederholung festigt den Stoff.') : '',
+    mode === 'review' ? h('p', { class: 'note' }, `${queue.length} Aufgaben zur Wiederholung. Sauber gelöst (ohne Fehlversuch und ohne Hilfe) wandern sie in eine höhere Box und kommen seltener wieder – sonst kommen sie bald erneut dran.`) : '',
     h('div', { class: 'row end' }, h('button', { class: 'primary', autofocus: true, onclick: nextTask }, enc.kind === 'crystal' ? 'Rätsel beginnen' : 'Kampf beginnen ⚔')),
   );
   renderHeader();
@@ -156,6 +165,7 @@ interface TaskCtx {
 
 function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   let helpLevel = 0;
+  let failedOnce = false;
   const stat = game.stat(task.topic);
   const perTaskDamage = s.monsterMax / s.enc.tasks.length;
 
@@ -182,6 +192,10 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   updateHelpBtn();
 
   const fail = (msg: string, kind: 'fizzle' | 'weak' | 'miss', extra?: HTMLElement) => {
+    if (!failedOnce) {
+      failedOnce = true;
+      game.reviewTask(task.id, false);
+    }
     const robe = game.has('robe') && !s.robeUsed && s.enc.kind !== 'crystal';
     let penalty = '';
     if (robe) {
@@ -215,9 +229,11 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   };
 
   const succeed = (msg: string) => {
-    const mult = s.training ? 0.25 : HELP_XP[helpLevel];
+    const clean = !failedOnce && helpLevel === 0;
+    const mult = s.mode === 'review' ? 0.5 * HELP_XP[helpLevel] : s.training ? 0.25 : HELP_XP[helpLevel];
     const xp = Math.round(task.xp * mult);
-    const gold = s.training ? 0 : Math.round(task.gold * (helpLevel === 3 ? 0.5 : 1));
+    const gold = s.mode === 'review' ? (clean ? Math.round(task.gold * 0.25) : 0) : s.training ? 0 : Math.round(task.gold * (helpLevel === 3 ? 0.5 : 1));
+    game.reviewTask(task.id, clean);
     stat.correct++;
     const up = game.addXp(xp);
     game.addGold(gold);
@@ -246,25 +262,12 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
     h('p', { class: 'question' }, task.question),
   );
 
+  // Gegebene Werte müssen bewusst von Hand (mit Einheit) übertragen werden – Wiederholung ist gewollt.
   const given = task.given ?? [];
-  let fillTarget: ((value: string, unit: string) => void) | null = null;
   if (given.length) {
-    const tbl = h(
-      'table',
-      { class: 'given' },
-      h('tr', {}, h('th', {}, 'Gegeben'), h('th', {}, 'Wert'), h('th', {}, '')),
-      ...given.map((g) => {
-        const usable = g.unit !== '';
-        return h(
-          'tr',
-          {},
-          h('td', {}, g.label),
-          h('td', {}, `${g.value} ${g.unit}`),
-          h('td', {}, usable && task.type === 'numeric' ? h('button', { class: 'tiny', title: 'In das zuletzt gewählte Feld einsetzen', onclick: () => fillTarget?.(g.value, g.unit) }, '⇩ einsetzen') : ''),
-        );
-      }),
+    root.append(
+      h('table', { class: 'given' }, h('tr', {}, h('th', {}, 'Gegeben'), h('th', {}, 'Wert')), ...given.map((g) => h('tr', {}, h('td', {}, g.label), h('td', {}, `${g.value} ${g.unit}`)))),
     );
-    root.append(tbl);
   }
 
   const inputArea = h('div', { class: 'task-input' });
@@ -273,7 +276,7 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   if (task.type === 'choice') {
     renderChoice(task, inputArea, stat, succeed, fail);
   } else {
-    renderNumeric(s, task, inputArea, stat, succeed, fail, (fn) => (fillTarget = fn));
+    renderNumeric(s, task, inputArea, stat, succeed, fail);
   }
 }
 
@@ -324,7 +327,6 @@ function renderNumeric(
   stat: ReturnType<typeof game.stat>,
   succeed: (m: string) => void,
   fail: (m: string, k: 'fizzle' | 'weak' | 'miss', extra?: HTMLElement) => void,
-  setFillTarget: (fn: (value: string, unit: string) => void) => void,
 ) {
   const known = s.level.spells.filter((sp) => game.knows(sp.id));
   const picker = h('div', { class: 'spell-picker' });
@@ -345,15 +347,6 @@ function renderNumeric(
   });
 
   let lastFocused: FieldPair | null = null;
-  setFillTarget((value, unit) => {
-    if (!lastFocused) {
-      toast('Klicke zuerst in ein Eingabefeld des Zaubers.', 'info');
-      return;
-    }
-    lastFocused.value.value = value;
-    lastFocused.unit.value = unit;
-    lastFocused.unit.dispatchEvent(new Event('input'));
-  });
 
   const buildForm = (spell: Spell) => {
     form.innerHTML = '';
@@ -382,7 +375,8 @@ function renderNumeric(
     for (const v of spell.vars) {
       const f = mkPair(v.label, v.unit, v.list);
       fields.push({ v, f });
-      const expect = v.unit === '*' ? '' : v.unit === '1' ? 'dimensionslos' : `SI: ${formatDims(parseUnit(v.unit).dims)}`;
+      // Die erwartete SI-Einheit verrät nur die Brille der Dimensionen
+      const expect = v.unit === '1' ? 'dimensionslos' : v.unit === '*' || !game.has('glasses') ? '' : `👓 SI: ${formatDims(parseUnit(v.unit).dims)}`;
       grid.append(h('label', { class: 'var-label' }, h('b', {}, v.display), ` ${v.label}`, expect ? h('small', {}, ` (${expect})`) : null), h('div', { class: 'pair' }, f.value, v.unit === '1' ? h('span', { class: 'unit-none' }, '—') : f.unit), f.preview);
       if (v.unit === '1') f.unit.value = '';
     }
@@ -588,4 +582,31 @@ function prettyUnit(u: string): string {
   return u
     .replace(/\^-?\d+/g, (m) => sup(Number(m.slice(1))))
     .replace(/\*/g, '·');
+}
+
+/**
+ * Übungsschrein: gelöste Aufgaben aller Level kehren nach dem Leitner-Prinzip zurück.
+ * Fällige zuerst, sonst die mit der niedrigsten Box.
+ */
+export function openReview(levels: LevelData[], onFinish: () => void, count = 6): boolean {
+  const all = levels.flatMap((l) => l.tasks).filter((t) => game.isTaskDone(t.id));
+  if (!all.length) return false;
+  const box = (id: string) => game.data.taskBoxes[id]?.box ?? 1;
+  const due = all.filter((t) => game.taskDue(t.id));
+  const rest = all.filter((t) => !game.taskDue(t.id)).sort((a, b) => box(a.id) - box(b.id));
+  const shuffled = [...due.sort(() => Math.random() - 0.5), ...rest];
+  const pick = shuffled.slice(0, count);
+  const merged: LevelData = { ...levels[0], spells: levels.flatMap((l) => l.spells), tasks: all };
+  const enc: Encounter = {
+    id: 'review',
+    marker: '',
+    kind: 'crystal',
+    name: due.length ? `Übungsschrein – ${due.length} fällig` : 'Übungsschrein – freies Üben',
+    lesson: 0,
+    intro: 'Der Schrein leuchtet auf. Aufgaben, die du schon einmal gelöst hast, erscheinen erneut – Werte und Einheiten musst du wieder selbst einsetzen.',
+    outro: 'Wiederholungsrunde geschafft! Was sauber saß, kommt erst später wieder.',
+    tasks: pick.map((t) => t.id),
+  };
+  openEncounter(merged, enc, () => onFinish(), 'review');
+  return true;
 }

@@ -38,6 +38,9 @@ export interface SaveData {
   stats: Record<string, TopicStats>;
   cards: Record<string, CardState>;
   cardRound: number;
+  /** Leitner-Boxen für gelöste Aufgaben (Wiederholung) */
+  taskBoxes: Record<string, CardState>;
+  taskRound: number;
   createdAt: number;
 }
 
@@ -69,6 +72,8 @@ function freshSave(name: string): SaveData {
     stats: {},
     cards: {},
     cardRound: 0,
+    taskBoxes: {},
+    taskRound: 0,
     createdAt: Date.now(),
   };
 }
@@ -223,6 +228,26 @@ class GameState {
     c.box = correct ? Math.min(5, c.box + 1) : 1;
     c.due = this.data.cardRound + [0, 1, 2, 4, 8, 16][c.box];
   }
+  /**
+   * Aufgaben-Wiederholung: sauber gelöst (ohne Fehlversuch, ohne Hilfe) -> Box höher,
+   * sonst zurück in Box 1. Fällig nach 1, 2, 4, 8, 16 Wiederholungsrunden.
+   */
+  reviewTask(id: string, clean: boolean) {
+    const c = (this.data.taskBoxes[id] ??= { box: 1, due: 0 });
+    c.box = clean ? Math.min(5, c.box + 1) : 1;
+    c.due = this.data.taskRound + [0, 1, 2, 4, 8, 16][c.box];
+  }
+  taskDue(id: string): boolean {
+    const c = this.data.taskBoxes[id];
+    return !!c && c.due <= this.data.taskRound;
+  }
+  dueTaskCount(): number {
+    return Object.keys(this.data.taskBoxes).filter((id) => this.taskDue(id)).length;
+  }
+  advanceTaskRound() {
+    this.data.taskRound++;
+  }
+
   cardDue(id: string): boolean {
     const c = this.data.cards[id];
     return !c || c.due <= this.data.cardRound;

@@ -59,6 +59,11 @@
     "marker": "H",
     "greeting": "Willkommen, willkommen! Magische Ausrüstung für Leute, die rechnen können. Bezahlt wird in Gold, nicht in Ausreden."
   },
+  "shrine": {
+    "name": "Übungsschrein",
+    "marker": "U",
+    "greeting": "Auf dem Schrein steht: „Wiederholung ist die Mutter aller Magie.“ Hier kehren gelöste Aufgaben zurück – wer sie sauber löst, sieht sie seltener wieder."
+  },
   "legend": {
     "#": "wall",
     ".": "floor",
@@ -79,7 +84,7 @@
     "#........#,,,,,,,,,,#........#",
     "####=#####,,,,,,,,,,#####=####",
     "#,,T,,,,,,,,,,,,,,,,,,,,,,T,,#",
-    "#,,,,,,,,T,,,,P,,,,,,,,,,,,,,#",
+    "#,,,,,,,,T,,,,P,,,,,U,,,,,,,,#",
     "#,,,,H,,,,,,,,,,,,,,,,,3,,,,,#",
     "#,T,,,,,,,,,,,,,,,,,,,,,,,,T,#",
     "####=#########G##########=####",

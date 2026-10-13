@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 import './style.css';
-import { LEVEL_OVERVIEW, getLevel } from './content/levels';
+import { LEVELS, LEVEL_OVERVIEW, getLevel } from './content/levels';
 import type { LevelData } from './content/types';
 import { LevelScene, type EntityRef } from './game/LevelScene';
 import { game } from './game/state';
 import { closeAllModals, closeTopModal, h, isModalOpen, openModal, showDialog, toast } from './ui/dom';
-import { openEncounter } from './ui/encounter';
+import { openEncounter, openReview } from './ui/encounter';
 import { openFlashcards } from './ui/flashcards';
 import { openGrimoire, openShop, openStats, talkToMentor } from './ui/menus';
 
@@ -50,7 +50,14 @@ function renderHud() {
   hud.innerHTML = '';
   hud.append(
     h('div', { class: 'hud-who' }, h('b', {}, d.name), h('span', { class: 'rank' }, game.rank), h('div', { class: 'bar xpbar', title: `${d.xp} XP` }, h('div', { class: 'fill', style: `width:${xpPct}%` }), h('span', {}, `${d.xp}${next ? ' / ' + next : ''} XP`))),
-    h('div', { class: 'hud-bars' }, bar('❤', d.hp, game.maxHp, 'hpbar'), bar('✦', d.mana, game.maxMana, 'manabar'), h('span', { class: 'gold' }, `🪙 ${d.gold}`)),
+    h(
+      'div',
+      { class: 'hud-bars' },
+      bar('❤', d.hp, game.maxHp, 'hpbar'),
+      bar('✦', d.mana, game.maxMana, 'manabar'),
+      h('span', { class: 'gold' }, `🪙 ${d.gold}`),
+      game.dueTaskCount() ? h('span', { class: 'due', title: 'Aufgaben zur Wiederholung fällig – geh zum Übungsschrein' }, `🔁 ${game.dueTaskCount()} fällig`) : '',
+    ),
     h(
       'div',
       { class: 'hud-buttons' },
@@ -109,6 +116,7 @@ function showTitle() {
           h('li', {}, 'Bewegen: Pfeiltasten / WASD – oder auf die Karte klicken.'),
           h('li', {}, 'Interagieren: E, Leertaste oder Enter (oder die Figur anklicken).'),
           h('li', {}, 'Mentorin zuerst! Sie bringt dir Theorie und neue Zauber bei.'),
+          h('li', {}, 'Übungsschrein: gelöste Aufgaben kommen nach dem Leitner-Prinzip wieder – so lange, bis sie sitzen.'),
           h('li', {}, 'Zaubern: Zauber wählen → Werte MIT Einheit einsetzen → Ergebnis mit Einheit angeben.'),
           h('li', {}, 'Falsche Dimension → der Zauber verpufft. Falsche Zehnerpotenz → er trifft nur schwach.'),
           h('li', {}, 'Dezimalkomma ist erlaubt: 2,39 oder 2.39; Zehnerpotenzen als 2,39e-4 oder 2,39·10^-4.'),
@@ -204,6 +212,15 @@ LevelScene.hooks = {
       case 'merchant':
         openShop(level);
         break;
+      case 'shrine': {
+        const unlocked = LEVELS.filter((l) => game.isLevelUnlocked(l.id));
+        const ok = openReview(unlocked, () => {
+          refresh();
+          renderHud();
+        });
+        if (!ok) showDialog(level.shrine?.name ?? 'Übungsschrein', [level.shrine?.greeting ?? '', 'Noch ist der Schrein leer – löse zuerst ein paar Aufgaben in der Akademie.']);
+        break;
+      }
       case 'gate': {
         const total = level.encounters.filter((e) => e.kind !== 'boss');
         const done = total.filter((e) => game.isEncounterDone(e.id)).length;

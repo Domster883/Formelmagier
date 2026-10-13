@@ -59,7 +59,7 @@ for (const level of LEVELS) {
     it('Karte ist rechteckig und Marker sind eindeutig', () => {
       const w = level.map[0].length;
       level.map.forEach((row, i) => expect(row.length, `Zeile ${i}`).toBe(w));
-      const markers = [level.mentor.marker, level.merchant.marker, 'P', ...level.encounters.map((e) => e.marker)];
+      const markers = [level.mentor.marker, level.merchant.marker, 'P', ...(level.shrine ? [level.shrine.marker] : []), ...level.encounters.map((e) => e.marker)];
       for (const m of markers) {
         const count = level.map.join('').split(m).length - 1;
         expect(count, `Marker ${m}`).toBe(1);

@@ -61,7 +61,15 @@ Ein Level wird erst freigeschaltet, wenn der Boss des vorherigen besiegt ist. Ge
 
 Jede Aufgabe: `id`, `story`, `given` (Werte mit Einheit), `spells` (erlaubte Formeln), `answer` (Wert + Einheit), `tolerance`, `hints[3]`, `solutionSteps[]`, `xp`, `gold`. Zusätzlich: `solution` (Musterlösung als Zauber mit eingesetzten Werten – wird automatisch nachgerechnet), optional `requireSI`, `commonMistakes`. Details: `src/content/types.ts`.
 
+## Bestätigte Konventionen (Skriptum)
+
+- Standardabweichung einer Messreihe mit **n − 1**
+- 1 Jahr = **365 Tage**
+- g = **9,81 m/s²**
+
 ## Didaktische Regeln
+
+- **Wiederholung, Wiederholung, Wiederholung:** Werte und Einheiten werden immer von Hand eingesetzt (keine Kopier-Abkürzungen). Gelöste Aufgaben kehren nach dem Leitner-Prinzip am Übungsschrein zurück, bis sie sauber sitzen.
 
 - Erst Story-Situation, dann Formel, dann Rechnung – nie nackte Rechenaufgaben
 - Nach jedem Level eine Lernkarten-Runde (Spaced Repetition)

@@ -22,7 +22,12 @@
 - [x] Speichern/Laden (localStorage, automatisch)
 - [x] Weltkarte mit 10 Regionen, Freischaltung über Bosse, Training
 
-## Phase 3 – Feedback zu Level 1 ⏳ (du bist dran)
+## Phase 3 – Feedback zu Level 1 ⏳
+- [x] Konventionen bestätigt: n − 1, 1 Jahr = 365 d, g = 9,81 m/s²
+- [x] „Mühsam ist gewollt“: Einsetzen-Knopf entfernt, erwartete SI-Einheit nur noch mit Brille sichtbar
+- [x] Übungsschrein: Leitner-Wiederholung gelöster Aufgaben, HUD-Anzeige „fällig“
+- [ ] Skriptum-PDF ins Repo (`docs/`) – öffentlich nicht auffindbar, kommt vom Nutzer
+- [ ] Demo-Feedback einarbeiten
 
 ## Phase 4 – Level 2–10
 - [ ] Level 2 Windpfade (Kinematik)

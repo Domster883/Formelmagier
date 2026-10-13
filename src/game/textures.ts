@@ -121,6 +121,18 @@ export function makeTextures(scene: Phaser.Scene) {
     g.fillStyle(0x34495e);
     for (let i = 0; i < 4; i++) g.fillRect(10, 15 + i * 2, 12 - (i % 2) * 4, 1);
   });
+  make(scene, 'shrine', (g) => {
+    g.fillStyle(0x000000, 0.25).fillEllipse(16, 29, 26, 5);
+    g.fillStyle(0x8e8aa8).fillRect(5, 20, 22, 9);
+    g.fillStyle(0xb5b1cc).fillRect(8, 8, 16, 13);
+    g.fillStyle(0xd4ac0d).fillRect(3, 6, 26, 3);
+    g.fillStyle(0x7c4dff).fillCircle(16, 14, 4);
+    g.fillStyle(0xe8dcff).fillCircle(15, 13, 1);
+  });
+  make(scene, 'due', (g) => {
+    g.fillStyle(0xe67e22).fillCircle(16, 16, 9);
+    g.fillStyle(0xffffff).fillRect(15, 10, 3, 8).fillRect(15, 20, 3, 3);
+  });
   make(scene, 'done', (g) => {
     g.fillStyle(0x27ae60).fillCircle(16, 16, 9);
     g.lineStyle(3, 0xffffff).beginPath().moveTo(11, 16).lineTo(15, 20).lineTo(22, 11).strokePath();

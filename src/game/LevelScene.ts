@@ -12,6 +12,7 @@ import { makeTextures, TILE } from './textures';
 export type EntityRef =
   | { type: 'mentor' }
   | { type: 'merchant' }
+  | { type: 'shrine' }
   | { type: 'encounter'; encounter: Encounter }
   | { type: 'gate' };
 
@@ -64,7 +65,7 @@ export class LevelScene extends Phaser.Scene {
     makeTextures(this);
     const lv = this.level;
     this.grid = lv.map;
-    const markers = new Set([lv.mentor.marker, lv.merchant.marker, 'P', ...lv.encounters.map((e) => e.marker)]);
+    const markers = new Set([lv.mentor.marker, lv.merchant.marker, 'P', ...(lv.shrine ? [lv.shrine.marker] : []), ...lv.encounters.map((e) => e.marker)]);
 
     for (let y = 0; y < this.grid.length; y++) {
       this.tiles[y] = [];
@@ -95,6 +96,7 @@ export class LevelScene extends Phaser.Scene {
     };
     place(lv.mentor.marker, { type: 'mentor' }, 'mentor');
     place(lv.merchant.marker, { type: 'merchant' }, 'merchant');
+    if (lv.shrine) place(lv.shrine.marker, { type: 'shrine' }, 'shrine');
     for (const e of lv.encounters) place(e.marker, { type: 'encounter', encounter: e }, e.kind === 'crystal' ? 'crystal' : e.kind === 'boss' ? 'boss' : 'monster');
 
     // gespeicherte Position
@@ -136,6 +138,9 @@ export class LevelScene extends Phaser.Scene {
     for (const ent of this.entities) {
       ent.badge?.destroy();
       ent.badge = undefined;
+      if (ent.ref.type === 'shrine' && game.dueTaskCount() > 0) {
+        ent.badge = this.add.image(ent.sprite.x + 11, ent.sprite.y - 11, 'due').setScale(0.6).setDepth(4);
+      }
       if (ent.ref.type !== 'encounter') continue;
       const e = ent.ref.encounter;
       const lessonsHeard = game.data.lessons[this.level.id] ?? 0;
@@ -212,6 +217,8 @@ export class LevelScene extends Phaser.Scene {
         return this.level.mentor.name;
       case 'merchant':
         return this.level.merchant.name;
+      case 'shrine':
+        return this.level.shrine?.name ?? 'Übungsschrein';
       case 'gate':
         return 'Versiegeltes Tor';
       case 'encounter':
@@ -226,7 +233,7 @@ export class LevelScene extends Phaser.Scene {
       this.setStatus('');
       return;
     }
-    const verb = e.ref.type === 'encounter' ? (e.ref.encounter.kind === 'crystal' ? 'Untersuchen' : 'Kämpfen') : e.ref.type === 'gate' ? 'Ansehen' : 'Sprechen';
+    const verb = e.ref.type === 'encounter' ? (e.ref.encounter.kind === 'crystal' ? 'Untersuchen' : 'Kämpfen') : e.ref.type === 'gate' ? 'Ansehen' : e.ref.type === 'shrine' ? 'Üben' : 'Sprechen';
     this.prompt.setText(`[E] ${verb}: ${this.label(e)}`);
     this.prompt.setPosition(Phaser.Math.Clamp(this.player.x, 90, this.scale.width - 90), this.player.y - 18).setVisible(true);
     this.setStatus(`${this.label(e)} – E/Leertaste drücken oder anklicken`);

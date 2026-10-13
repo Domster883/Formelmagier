@@ -116,6 +116,8 @@ export interface LevelData {
   intro: string;
   mentor: { name: string; marker: string; greeting: string; lessons: Lesson[]; afterAll: string };
   merchant: { name: string; marker: string; greeting: string };
+  /** Übungsschrein: Wiederholung bereits gelöster Aufgaben (Spaced Repetition) */
+  shrine?: { name: string; marker: string; greeting: string };
   legend: Record<string, string>;
   map: string[];
   spells: Spell[];

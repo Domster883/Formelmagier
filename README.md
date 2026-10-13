@@ -24,12 +24,14 @@ npm run build      # statische Seite in dist/ (relativ verlinkt, überall hostba
 ## So funktioniert ein Zauber
 
 1. Zauber aus dem Grimoire wählen (z. B. *Fluxus* `q = m / (A · t)`).
-2. Gegebene Werte **mit Einheit** einsetzen (`112` `g`, `13` `dm²`, `1` `h`). Mit „⇩ einsetzen“ landet ein gegebener Wert im zuletzt angeklickten Feld.
+2. Gegebene Werte **mit Einheit von Hand** einsetzen (`112` `g`, `13` `dm²`, `1` `h`) – bewusst ohne Abkürzung, Wiederholung ist gewollt.
 3. Ergebnis mit Einheit angeben (`2,39e-4` `kg/(m²·s)`).
 
 - Falsche Dimension → **verpufft**, mit Erklärung, was fehlt („durch eine Zeit teilen (s⁻¹)“)
 - Richtige Ziffern, falsche Zehnerpotenz → **trifft schwach**
 - Innerhalb der Toleranz (Standard ±1 %) → **Volltreffer**
+
+**Wiederholung:** Jede gelöste Aufgabe landet in einer Leitner-Box. Am **Übungsschrein** kommen fällige Aufgaben zurück; sauber gelöst (ohne Fehlversuch, ohne Hilfe) wandern sie eine Box höher und kommen seltener, sonst zurück in Box 1. Die HUD-Anzeige „🔁 n fällig“ erinnert daran.
 
 Einheiten-Schreibweisen: `m²`, `m^2`, `m2`; `·`, `*` oder Leerzeichen für Multiplikation; alles nach `/` steht im Nenner (`kg/m²s` = `kg/(m²·s)`). Zahlen: `2,39`, `2.39`, `2,39e-4`, `2,39·10^-4`.
 
