@@ -1,9 +1,10 @@
 /** Grimoire/Codex, Mentor, Händler, Statistik */
 import { CONSTANTS, ITEMS, LEVELS } from '../content/levels';
-import type { LevelData } from '../content/types';
+import type { LevelData, WorkedExample } from '../content/types';
 import { describeDims, formatNumber, parseUnit, PREFIX_TABLE, sup, UnitError } from '../engine/units';
 import { game, RANKS } from '../game/state';
 import { h, openModal, showDialog, toast } from './dom';
+import { openPractice } from './encounter';
 
 // ---------------------------------------------------------------------------
 // Grimoire / Codex
@@ -68,9 +69,27 @@ function theoryTab(): HTMLElement {
   let any = false;
   for (const level of LEVELS) {
     const heard = game.data.lessons[level.id] ?? 0;
-    level.mentor.lessons.slice(0, heard).forEach((l) => {
+    const seen = Math.max(heard, game.data.theorySeen[level.id] ?? 0);
+    level.mentor.lessons.slice(0, seen).forEach((l) => {
       any = true;
-      box.append(h('div', { class: 'lesson' }, h('h3', {}, l.title), ...l.lines.map((line) => h('p', {}, line))));
+      box.append(
+        h(
+          'div',
+          { class: 'lesson' },
+          h('h3', {}, l.title),
+          ...l.lines.map((line) => h('p', {}, line)),
+          l.example
+            ? h(
+                'details',
+                { class: 'example-box' },
+                h('summary', {}, `📝 ${l.example.title}`),
+                h('p', { class: 'story' }, l.example.situation),
+                h('ol', { class: 'steps' }, ...l.example.steps.map((st) => h('li', {}, st.say, st.math ? h('div', { class: 'math' }, st.math) : ''))),
+                h('p', { class: 'takeaway' }, '💡 ', l.example.takeaway),
+              )
+            : '',
+        ),
+      );
     });
   }
   if (!any) box.append(h('p', {}, 'Hier sammeln sich die Lektionen deiner Mentoren.'));
@@ -130,29 +149,108 @@ export function talkToMentor(level: LevelData, onDone: () => void) {
   const heard = game.data.lessons[level.id] ?? 0;
   const lessons = level.mentor.lessons;
   if (heard >= lessons.length) {
-    const m = openModal({ title: level.mentor.name, onClose: onDone });
+    const m = openModal({ title: level.mentor.name, wide: true, onClose: onDone });
     m.body.append(
       h('div', { class: 'dialog' }, h('div', { class: 'portrait mentor' }), h('div', { class: 'dialog-main' }, h('div', { class: 'speaker' }, level.mentor.name), h('p', { class: 'dialog-text' }, level.mentor.afterAll))),
-      h('p', { class: 'small' }, 'Möchtest du eine Lektion wiederholen?'),
-      h('div', { class: 'row wrap' }, ...lessons.map((l) => h('button', { class: 'ghost', onclick: () => showDialog(level.mentor.name, l.lines, { title: l.title, portrait: 'mentor' }) }, l.title))),
+      h('p', { class: 'small' }, 'Möchtest du etwas wiederholen? Theorie, vorgerechnetes Beispiel oder Übung – so oft du willst.'),
+      h(
+        'div',
+        { class: 'lesson-menu' },
+        ...lessons.map((l, i) =>
+          h(
+            'div',
+            { class: 'lesson-row' },
+            h('b', {}, l.title),
+            h('div', { class: 'row wrap' }, h('button', { class: 'ghost', onclick: () => showDialog(level.mentor.name, l.lines, { title: l.title, portrait: 'mentor' }) }, '📜 Theorie'), l.example ? h('button', { class: 'ghost', onclick: () => showExample(level, l.example!) }, '📝 Beispiel') : '', l.practice?.length ? h('button', { class: 'ghost', onclick: () => openPractice(level, i, () => {}) }, '🎓 Üben') : ''),
+          ),
+        ),
+      ),
     );
     return;
   }
   const lesson = lessons[heard];
+  const theoryDone = (game.data.theorySeen[level.id] ?? 0) > heard;
+
+  // Lektion abschließen: erst danach öffnen sich die zugehörigen Prüfsteine
+  const finishLesson = () => {
+    game.data.lessons[level.id] = heard + 1;
+    game.save();
+    game.emit();
+    const opened = level.encounters.filter((e) => e.lesson === heard + 1).map((e) => e.name);
+    toast(opened.length ? `Lektion abgeschlossen! Jetzt offen: ${opened.join(', ')}` : 'Lektion abgeschlossen!', 'gold', 4500);
+    onDone();
+  };
+  const practice = () => {
+    const started = openPractice(level, heard, (done) => {
+      if (done) finishLesson();
+      else {
+        toast(`Die Übung ist noch offen – sprich wieder mit ${level.mentor.name}, um weiterzumachen.`, 'info', 4500);
+        onDone();
+      }
+    });
+    if (!started) finishLesson();
+  };
+  const example = () => (lesson.example ? showExample(level, lesson.example, practice) : practice());
+
+  if (theoryDone) {
+    // Theorie schon gehört, Übung noch offen
+    showDialog(level.mentor.name, [`Da bist du ja wieder! Wir waren bei „${lesson.title}“. Ich rechne dir das Beispiel noch einmal vor, dann übst du.`], { portrait: 'mentor', title: lesson.title, onDone: example });
+    return;
+  }
+
   const lines = heard === 0 ? [level.mentor.greeting, ...lesson.lines] : lesson.lines;
   showDialog(level.mentor.name, lines, {
     title: lesson.title,
     portrait: 'mentor',
     onDone: () => {
-      game.data.lessons[level.id] = heard + 1;
+      game.data.theorySeen[level.id] = heard + 1;
       game.learn(lesson.unlocks);
       game.save();
       game.emit();
       const names = lesson.unlocks.map((id) => level.spells.find((s) => s.id === id)?.name).filter(Boolean);
       if (names.length) toast(`Neue Zauber im Grimoire: ${names.join(', ')}`, 'gold', 4000);
       onDone();
+      example();
     },
   });
+}
+
+/** Die Mentorin rechnet ein Beispiel vor – Schritt für Schritt aufgedeckt. */
+export function showExample(level: LevelData, ex: WorkedExample, onDone?: () => void) {
+  let finished = false;
+  const m = openModal({ title: `📝 ${ex.title}`, wide: true, onClose: () => finished && onDone?.() });
+  const list = h('ol', { class: 'steps example-steps' });
+  const takeaway = h('p', { class: 'takeaway hidden' }, '💡 Merke: ', ex.takeaway);
+  const next = h('button', { class: 'primary', autofocus: true }, 'Nächster Schritt ▸');
+  const counter = h('span', { class: 'dialog-counter' });
+  let i = 0;
+  const render = () => {
+    const st = ex.steps[i];
+    list.append(h('li', { class: 'example-step' }, h('p', {}, st.say), st.math ? h('div', { class: 'math' }, st.math) : ''));
+    counter.textContent = `Schritt ${i + 1} / ${ex.steps.length}`;
+    if (i === ex.steps.length - 1) {
+      takeaway.classList.remove('hidden');
+      next.textContent = onDone ? 'Jetzt bin ich dran! ✎' : 'Verstanden ✓';
+    }
+    requestAnimationFrame(() => (list.lastElementChild as HTMLElement)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
+  };
+  next.addEventListener('click', () => {
+    if (i < ex.steps.length - 1) {
+      i++;
+      render();
+      next.focus();
+    } else {
+      finished = true;
+      m.close();
+    }
+  });
+  m.body.append(
+    h('div', { class: 'dialog' }, h('div', { class: 'portrait mentor' }), h('div', { class: 'dialog-main' }, h('div', { class: 'speaker' }, `${level.mentor.name} rechnet vor`), h('p', { class: 'dialog-text' }, ex.situation))),
+    list,
+    takeaway,
+    h('div', { class: 'row end' }, counter, next),
+  );
+  render();
 }
 
 // ---------------------------------------------------------------------------

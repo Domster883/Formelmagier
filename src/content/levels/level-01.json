@@ -19,7 +19,20 @@
           "Vorsilben wie k (10³), m (10⁻³) oder µ (10⁻⁶) sind nur Zehnerpotenzen; bei dm² oder cm³ wird die Vorsilbe mitpotenziert!",
           "Mit dem Zauber „Transmutatio“ verwandelst du jede Größe in SI-Einheiten."
         ],
-        "unlocks": ["transmutatio"]
+        "unlocks": ["transmutatio"],
+        "example": {
+          "title": "Beispiel: Ein Blatt vermessen",
+          "situation": "Ein Ahornblatt aus dem Akademiegarten hat eine Fläche von 450 cm². Wie viel ist das in der SI-Einheit m²?",
+          "steps": [
+            {"say": "Zuerst zerlegen: cm² bedeutet (cm)², also Zentimeter mal Zentimeter.", "math": "450 cm² = 450 · (1 cm)²"},
+            {"say": "Die Vorsilbe c steht für 10⁻². Ersetze sie: 1 cm = 10⁻² m.", "math": "450 · (10⁻² m)²"},
+            {"say": "Jetzt die Falle: Das Quadrat wirkt auch auf die Vorsilbe! (10⁻²)² = 10⁻⁴.", "math": "450 · 10⁻⁴ m²"},
+            {"say": "Ausrechnen – und fertig ist die Umwandlung in SI.", "math": "= 0,045 m² = 4,5 · 10⁻² m²"},
+            {"say": "Als Zauber sieht das so aus: Transmutatio wählen, X = 450 und Einheit cm² eintragen, als Ergebnis 0,045 und m² angeben.", "math": "Transmutatio: 450 cm² → 0,045 m²"}
+          ],
+          "takeaway": "Bei Flächen und Volumen wird der Vorsilben-Faktor mitpotenziert: 1 cm² = 10⁻⁴ m², 1 cm³ = 10⁻⁶ m³, 1 dm² = 10⁻² m²."
+        },
+        "practice": ["l1-ue-cm3", "l1-ue-kmh"]
       },
       {
         "title": "Lektion 2: Raten und zusammengesetzte Größen",
@@ -29,7 +42,21 @@
           "Die Masse einer dünnen Schicht ist Dichte mal Volumen, und das Volumen ist Fläche mal Schichtdicke.",
           "Kennst du eine Masse und den Massenstrom (Masse pro Zeit), so liefert ihr Quotient die benötigte Zeit."
         ],
-        "unlocks": ["fluxus", "stratum", "tempus"]
+        "unlocks": ["fluxus", "stratum", "tempus"],
+        "example": {
+          "title": "Beispiel: Verdunstung aus einer Schale",
+          "situation": "Aus einer Wasserschale mit 6 dm² Oberfläche verdunsten in 20 min genau 30 g Wasser. Wie groß ist die Verdunstungsrate q in SI-Einheiten?",
+          "steps": [
+            {"say": "Frage übersetzen: Gesucht ist Masse pro Fläche und pro Zeit – das ist der Zauber Fluxus.", "math": "q = m / (A · t)"},
+            {"say": "Masse in kg umrechnen: g heißt 10⁻³ kg.", "math": "m = 30 g = 30 · 10⁻³ kg = 0,030 kg"},
+            {"say": "Fläche in m² umrechnen – die Vorsilbe d = 10⁻¹ wird mitquadriert.", "math": "A = 6 dm² = 6 · (10⁻¹ m)² = 0,06 m²"},
+            {"say": "Zeit in Sekunden umrechnen.", "math": "t = 20 min = 20 · 60 s = 1200 s"},
+            {"say": "Erst jetzt einsetzen und rechnen.", "math": "q = 0,030 kg / (0,06 m² · 1200 s) ≈ 4,17 · 10⁻⁴ kg/(m²·s)"},
+            {"say": "Probe über die Einheit: kg / (m² · s) – genau die Einheit einer Massenstromdichte. Passt!", "math": "[q] = kg/(m²·s) ✓"}
+          ],
+          "takeaway": "Das Rezept für jede Rechenaufgabe: 1. passenden Zauber wählen, 2. alle Werte in SI umrechnen, 3. einsetzen und rechnen, 4. Einheit des Ergebnisses prüfen."
+        },
+        "practice": ["l1-ue-eis", "l1-ue-salz"]
       },
       {
         "title": "Lektion 3: Skalare und Vektoren",
@@ -39,7 +66,19 @@
           "Stehen zwei Vektoren senkrecht aufeinander, so erhältst du den Betrag ihrer Summe mit dem Satz des Pythagoras.",
           "Der Zauber „Vectoria“ berechnet genau das: |F| = √(Fₓ² + F_y²)."
         ],
-        "unlocks": ["vectoria"]
+        "unlocks": ["vectoria"],
+        "example": {
+          "title": "Beispiel: Zwei Lehrlinge ziehen eine Kiste",
+          "situation": "Ein Lehrling zieht mit 3 N nach Osten, ein zweiter mit 4 N nach Norden an derselben Kiste. Wie stark ist die Gesamtkraft?",
+          "steps": [
+            {"say": "Kraft ist ein Vektor – sie hat Betrag UND Richtung. Einfach addieren (3 N + 4 N = 7 N) wäre nur richtig, wenn beide in dieselbe Richtung zögen.", "math": "|F| ≠ 3 N + 4 N"},
+            {"say": "Osten und Norden stehen senkrecht aufeinander. Die beiden Kräfte sind also die Komponenten.", "math": "Fₓ = 3 N,  F_y = 4 N"},
+            {"say": "Der Betrag der Summe folgt aus dem Satz des Pythagoras – das ist der Zauber Vectoria.", "math": "|F| = √(Fₓ² + F_y²)"},
+            {"say": "Einsetzen: Auch die Einheit wird mitquadriert und am Ende wieder gewurzelt.", "math": "|F| = √(9 N² + 16 N²) = √(25 N²) = 5 N"}
+          ],
+          "takeaway": "Skalare (Masse, Zeit, Energie, Temperatur) addiert man einfach. Vektoren (Kraft, Geschwindigkeit, Verschiebung) nur, wenn sie gleich gerichtet sind – stehen sie senkrecht, hilft Pythagoras."
+        },
+        "practice": ["l1-ue-vektor", "l1-ue-flieger"]
       },
       {
         "title": "Lektion 4: Messen heißt streuen",
@@ -50,7 +89,21 @@
           "Sind die Werte gaußverteilt, liegen etwa 68,3 % in x̄ ± σ, 95,4 % in x̄ ± 2σ und 99,7 % in x̄ ± 3σ.",
           "Mit diesem Wissen – und den Zaubern Medius, Sigma und Gaussia – kannst du den Messfehler-Golem bezwingen."
         ],
-        "unlocks": ["medius", "sigma", "gaussia"]
+        "unlocks": ["medius", "sigma", "gaussia"],
+        "example": {
+          "title": "Beispiel: Drei Pendelmessungen",
+          "situation": "Ein Lehrling misst dreimal die Schwingungsdauer eines Pendels: 4,8 s; 5,0 s; 5,2 s. Wie groß sind Mittelwert und Standardabweichung?",
+          "steps": [
+            {"say": "Mittelwert (Zauber Medius): alle Werte addieren und durch ihre Anzahl n = 3 teilen.", "math": "x̄ = (4,8 + 5,0 + 5,2) s / 3 = 15,0 s / 3 = 5,0 s"},
+            {"say": "Für die Streuung berechnest du zuerst, wie weit jeder Wert vom Mittelwert entfernt ist.", "math": "xᵢ − x̄:  −0,2 s;  0 s;  +0,2 s"},
+            {"say": "Diese Abweichungen quadrieren (damit sich Plus und Minus nicht aufheben) und summieren.", "math": "0,04 + 0 + 0,04 = 0,08 s²"},
+            {"say": "Durch n − 1 = 2 teilen – nicht durch n!", "math": "0,08 s² / 2 = 0,04 s²"},
+            {"say": "Zum Schluss die Wurzel ziehen: Das ist die Standardabweichung (Zauber Sigma).", "math": "σ = √(0,04 s²) = 0,2 s"},
+            {"say": "Deutung (Zauber Gaussia): Im Bereich x̄ ± σ liegen etwa 68,3 % aller Messungen, in x̄ ± 2σ 95,4 %, in x̄ ± 3σ 99,7 %.", "math": "x̄ ± σ = 4,8 s … 5,2 s  (68,3 %)"}
+          ],
+          "takeaway": "Standardabweichung in vier Schritten: Abweichungen bilden → quadrieren → summieren und durch n − 1 teilen → Wurzel ziehen."
+        },
+        "practice": ["l1-ue-mittel", "l1-ue-sigma", "l1-ue-glocke"]
       }
     ]
   },
@@ -733,6 +786,250 @@
       "outro": "Der Golem zerfällt zu einer ordentlich ausgewerteten Messreihe. Die Akademie ist gerettet!",
       "tasks": ["l1-golem-mittel", "l1-golem-sigma", "l1-golem-683", "l1-golem-unten", "l1-golem-oben"],
       "monster": { "name": "Messfehler-Golem", "hp": 250, "attack": 12, "color": "#8a7a6a" }
+    }
+  ],
+  "practice": [
+    {
+      "id": "l1-ue-cm3",
+      "type": "choice",
+      "title": "Der Würfelzucker",
+      "topic": "Einheiten umrechnen",
+      "story": "Magistra Mensura legt einen Würfelzucker mit genau 1 cm³ Volumen auf das Pult. „Wie viele Kubikmeter sind das? Denk an das Beispiel mit dem Blatt!“",
+      "question": "1 cm³ = ?",
+      "options": ["10⁻² m³", "10⁻³ m³", "10⁻⁶ m³", "10⁻⁹ m³"],
+      "correct": 2,
+      "explanation": "1 cm³ = (10⁻² m)³ = 10⁻⁶ m³ – die Vorsilbe wird mit hoch 3 genommen.",
+      "hints": [
+        "cm³ heißt (cm)³ – also Zentimeter mal Zentimeter mal Zentimeter.",
+        "1 cm = 10⁻² m. Was ergibt (10⁻²)³?",
+        "(10⁻²)³ = 10⁻⁶ → 1 cm³ = 10⁻⁶ m³"
+      ],
+      "solutionSteps": ["1 cm³ = (1 cm)³ = (10⁻² m)³", "(10⁻²)³ = 10⁻² · 10⁻² · 10⁻² = 10⁻⁶", "1 cm³ = 10⁻⁶ m³"],
+      "xp": 10,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-kmh",
+      "type": "numeric",
+      "title": "Der Laufbote",
+      "topic": "Einheiten umrechnen",
+      "story": "Der Laufbote der Akademie rennt mit 18 km/h durch die Gänge. Die Magistra will seine Geschwindigkeit in SI-Einheiten wissen – und zeigt dir, wie man das Schritt für Schritt macht.",
+      "question": "Rechne 18 km/h in m/s um.",
+      "given": [{"label": "Geschwindigkeit v", "value": "18", "unit": "km/h"}],
+      "guide": [
+        {"prompt": "Wie viele Meter sind 18 km? (Ergebnis in m)", "answer": {"value": 18000, "unit": "m"}, "requireSI": true, "hint": "Die Vorsilbe k steht für 10³ – also ist 1 km = 1000 m.", "explain": "18 km = 18 · 10³ m = 18 000 m"},
+        {"prompt": "Wie viele Sekunden hat eine Stunde? (Ergebnis in s)", "answer": {"value": 3600, "unit": "s"}, "requireSI": true, "hint": "1 h = 60 min und 1 min = 60 s.", "explain": "1 h = 60 · 60 s = 3600 s"}
+      ],
+      "spells": ["transmutatio"],
+      "answer": {"value": 5, "unit": "m/s"},
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": {"spell": "transmutatio", "inputs": {"X": "18 km/h"}},
+      "commonMistakes": [
+        {"value": 18000, "unit": "m/s", "feedback": "Du hast die Kilometer umgerechnet, aber die Stunde vergessen: Teile noch durch 3600 s."}
+      ],
+      "hints": [
+        "Wähle Transmutatio und trage X = 18 mit der Einheit km/h ein.",
+        "18 km/h = 18 000 m / 3600 s",
+        "18 000 m / 3600 s = 5 m/s"
+      ],
+      "solutionSteps": ["18 km = 18 000 m", "1 h = 3600 s", "v = 18 000 m / 3600 s = 5 m/s"],
+      "xp": 15,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-eis",
+      "type": "numeric",
+      "title": "Eis im Innenhof",
+      "topic": "Abgeleitete Einheiten",
+      "story": "Auf einer Pfütze im Innenhof hat sich eine dünne Eisschicht gebildet: 50 dm² groß und 4 mm dick. Eis hat eine Dichte von 917 kg/m³. Die Magistra fragt, wie schwer die Eisplatte ist.",
+      "question": "Welche Masse m hat die Eisschicht (in kg)?",
+      "given": [
+        {"label": "Dichte ρ", "value": "917", "unit": "kg/m³"},
+        {"label": "Fläche A", "value": "50", "unit": "dm²"},
+        {"label": "Dicke d", "value": "4", "unit": "mm"}
+      ],
+      "guide": [
+        {"prompt": "Rechne die Fläche A = 50 dm² in m² um.", "answer": {"value": 0.5, "unit": "m^2"}, "requireSI": true, "hint": "1 dm = 10⁻¹ m, also 1 dm² = (10⁻¹ m)² = 10⁻² m².", "explain": "A = 50 · 10⁻² m² = 0,5 m²"},
+        {"prompt": "Rechne die Dicke d = 4 mm in m um.", "answer": {"value": 0.004, "unit": "m"}, "requireSI": true, "hint": "Die Vorsilbe m (milli) steht für 10⁻³.", "explain": "d = 4 · 10⁻³ m = 0,004 m"}
+      ],
+      "spells": ["stratum"],
+      "answer": {"value": 1.834, "unit": "kg"},
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": {"spell": "stratum", "inputs": {"rho": "917 kg/m^3", "A": "50 dm^2", "d": "4 mm"}},
+      "commonMistakes": [{"value": 18.34, "unit": "kg", "feedback": "Achtung bei dm²: 1 dm² = 10⁻² m² (nicht 10⁻¹ m²)."}],
+      "hints": [
+        "Masse einer Schicht = Dichte · Fläche · Dicke → Zauber Stratum.",
+        "A = 0,5 m², d = 0,004 m",
+        "m = 917 kg/m³ · 0,5 m² · 0,004 m = 1,834 kg"
+      ],
+      "solutionSteps": ["A = 50 dm² = 0,5 m²", "d = 4 mm = 0,004 m", "m = ρ · A · d = 917 · 0,5 · 0,004 kg = 1,834 kg"],
+      "xp": 15,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-salz",
+      "type": "numeric",
+      "title": "Der Streuwagen",
+      "topic": "Abgeleitete Einheiten",
+      "story": "Der Winterdienst der Akademie streut Salz: Der Streuwagen gibt 0,5 g Salz pro Sekunde ab, im Tank sind 3 kg. Wie lange kann er streuen, bis der Tank leer ist?",
+      "question": "Wie lange dauert es, bis der Tank leer ist (in s)?",
+      "given": [
+        {"label": "Masse m", "value": "3", "unit": "kg"},
+        {"label": "Massenstrom ṁ", "value": "0,5", "unit": "g/s"}
+      ],
+      "guide": [
+        {"prompt": "Rechne den Massenstrom ṁ = 0,5 g/s in kg/s um.", "answer": {"value": 0.0005, "unit": "kg/s"}, "requireSI": true, "hint": "1 g = 10⁻³ kg. Die Sekunde bleibt, wie sie ist.", "explain": "ṁ = 0,5 · 10⁻³ kg/s = 5 · 10⁻⁴ kg/s"}
+      ],
+      "spells": ["tempus"],
+      "answer": {"value": 6000, "unit": "s"},
+      "tolerance": 0.01,
+      "requireSI": true,
+      "solution": {"spell": "tempus", "inputs": {"m": "3 kg", "mdot": "0.5 g/s"}},
+      "commonMistakes": [
+        {"value": 6, "unit": "s", "feedback": "Du hast Kilogramm durch Gramm pro Sekunde geteilt, ohne umzurechnen. Erst alles in SI: 0,5 g/s = 5 · 10⁻⁴ kg/s."}
+      ],
+      "hints": [
+        "Masse durch Massenstrom ergibt eine Zeit → Zauber Tempus.",
+        "ṁ = 0,5 g/s = 5 · 10⁻⁴ kg/s",
+        "t = 3 kg / (5 · 10⁻⁴ kg/s) = 6000 s"
+      ],
+      "solutionSteps": ["ṁ = 0,5 g/s = 5 · 10⁻⁴ kg/s", "t = m / ṁ = 3 kg / (5 · 10⁻⁴ kg/s) = 6000 s (= 100 min)"],
+      "xp": 15,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-vektor",
+      "type": "choice",
+      "title": "Richtung oder nicht?",
+      "topic": "Skalare und Vektoren",
+      "story": "Die Magistra hält vier Kärtchen hoch. Nur auf einem steht eine Größe, zu der man unbedingt auch eine Richtung angeben muss.",
+      "question": "Welche dieser Größen ist ein Vektor?",
+      "options": ["Temperatur", "Masse", "Geschwindigkeit", "Energie"],
+      "correct": 2,
+      "explanation": "Geschwindigkeit hat Betrag und Richtung (z. B. 5 m/s nach Norden) – ein Vektor. Temperatur, Masse und Energie sind Skalare.",
+      "hints": [
+        "Frag dich bei jeder Größe: Ergibt „… nach Norden“ einen Sinn?",
+        "„20 °C nach Norden“ oder „3 kg nach Osten“ ergeben keinen Sinn.",
+        "„5 m/s nach Norden“ ergibt Sinn → Geschwindigkeit."
+      ],
+      "solutionSteps": [
+        "Skalare: Temperatur, Masse, Energie – Zahlenwert und Einheit genügen.",
+        "Vektor: Geschwindigkeit – braucht zusätzlich eine Richtung."
+      ],
+      "xp": 10,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-flieger",
+      "type": "numeric",
+      "title": "Der Papierflieger",
+      "topic": "Skalare und Vektoren",
+      "story": "Ein verzauberter Papierflieger fliegt mit 12 m/s geradeaus, gleichzeitig schiebt ihn ein Seitenwind mit 5 m/s quer dazu. Wie schnell ist er insgesamt?",
+      "question": "Wie groß ist der Betrag der Gesamtgeschwindigkeit?",
+      "given": [
+        {"label": "vₓ (geradeaus)", "value": "12", "unit": "m/s"},
+        {"label": "v_y (quer)", "value": "5", "unit": "m/s"}
+      ],
+      "guide": [
+        {"prompt": "Berechne zuerst vₓ² + v_y² (mit Einheit!).", "answer": {"value": 169, "unit": "m^2/s^2"}, "hint": "12² = 144 und 5² = 25. Die Einheit wird mitquadriert: (m/s)² = m²/s².", "explain": "vₓ² + v_y² = 144 m²/s² + 25 m²/s² = 169 m²/s²"}
+      ],
+      "spells": ["vectoria"],
+      "answer": {"value": 13, "unit": "m/s"},
+      "tolerance": 0.01,
+      "solution": {"spell": "vectoria", "inputs": {"Fx": "12 m/s", "Fy": "5 m/s"}},
+      "commonMistakes": [
+        {"value": 17, "unit": "m/s", "feedback": "Die beiden Geschwindigkeiten stehen senkrecht – einfach addieren geht nicht. Nimm Pythagoras!"}
+      ],
+      "hints": [
+        "Vectoria funktioniert für jeden Vektor, nicht nur für Kräfte: setze Fₓ = 12 m/s und F_y = 5 m/s ein.",
+        "|v| = √(144 + 25) m/s",
+        "|v| = √169 m/s = 13 m/s"
+      ],
+      "solutionSteps": ["vₓ² + v_y² = 144 m²/s² + 25 m²/s² = 169 m²/s²", "|v| = √(169 m²/s²) = 13 m/s"],
+      "xp": 15,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-mittel",
+      "type": "numeric",
+      "title": "Vier Messungen",
+      "topic": "Messfehler & Statistik",
+      "story": "Vier Lehrlinge messen dieselbe Kerze und notieren: 10,1 cm; 9,9 cm; 10,3 cm; 9,7 cm. Welcher Wert ist der beste Schätzwert?",
+      "question": "Berechne den Mittelwert x̄ der vier Messungen.",
+      "given": [{"label": "Messwerte", "value": "10,1; 9,9; 10,3; 9,7", "unit": "cm"}],
+      "guide": [
+        {"prompt": "Addiere zuerst alle vier Messwerte.", "answer": {"value": 40, "unit": "cm"}, "hint": "10,1 + 9,9 + 10,3 + 9,7 = ?", "explain": "Summe = 40,0 cm"}
+      ],
+      "spells": ["medius"],
+      "answer": {"value": 10, "unit": "cm"},
+      "tolerance": 0.01,
+      "solution": {"spell": "medius", "inputs": {"x": "10.1; 9.9; 10.3; 9.7 cm"}},
+      "hints": [
+        "Medius: Messwerte durch „;“ getrennt eintragen, Einheit cm dazu.",
+        "Summe 40,0 cm, Anzahl n = 4",
+        "x̄ = 40,0 cm / 4 = 10,0 cm"
+      ],
+      "solutionSteps": ["Summe = 10,1 + 9,9 + 10,3 + 9,7 = 40,0 cm", "x̄ = 40,0 cm / 4 = 10,0 cm"],
+      "xp": 15,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-sigma",
+      "type": "numeric",
+      "title": "Wie stark streut die Kerze?",
+      "topic": "Messfehler & Statistik",
+      "story": "Dieselben vier Kerzen-Messungen: 10,1 cm; 9,9 cm; 10,3 cm; 9,7 cm, Mittelwert 10,0 cm. Jetzt rechnest du wie im Beispiel die Standardabweichung aus – Schritt für Schritt.",
+      "question": "Berechne die Standardabweichung σ.",
+      "given": [
+        {"label": "Messwerte", "value": "10,1; 9,9; 10,3; 9,7", "unit": "cm"},
+        {"label": "Mittelwert x̄", "value": "10,0", "unit": "cm"}
+      ],
+      "guide": [
+        {"prompt": "Die Abweichungen vom Mittelwert sind +0,1; −0,1; +0,3; −0,3 cm. Quadriere sie und bilde die Summe.", "answer": {"value": 0.2, "unit": "cm^2"}, "hint": "0,1² = 0,01 und 0,3² = 0,09. Die Einheit wird mitquadriert: cm².", "explain": "0,01 + 0,01 + 0,09 + 0,09 = 0,20 cm²"},
+        {"prompt": "Teile die Quadratsumme durch n − 1.", "answer": {"value": 0.0666667, "unit": "cm^2"}, "hint": "n = 4 Messwerte, also n − 1 = 3.", "explain": "0,20 cm² / 3 ≈ 0,0667 cm²"}
+      ],
+      "spells": ["sigma"],
+      "answer": {"value": 0.2582, "unit": "cm"},
+      "tolerance": 0.01,
+      "solution": {"spell": "sigma", "inputs": {"x": "10.1; 9.9; 10.3; 9.7 cm"}},
+      "commonMistakes": [
+        {"value": 0.2236, "unit": "cm", "feedback": "Du hast durch n = 4 geteilt. Bei einer Messreihe teilt man durch n − 1 = 3."},
+        {"value": 0.06667, "unit": "cm", "feedback": "Das ist σ² (die Varianz). Zieh noch die Wurzel!"}
+      ],
+      "hints": [
+        "Sigma: dieselben Messwerte durch „;“ getrennt eintragen, Einheit cm.",
+        "Quadratsumme 0,20 cm², durch n − 1 = 3 → 0,0667 cm²",
+        "σ = √(0,0667 cm²) ≈ 0,258 cm"
+      ],
+      "solutionSteps": [
+        "Abweichungen: +0,1; −0,1; +0,3; −0,3 cm",
+        "Quadrate: 0,01; 0,01; 0,09; 0,09 → Summe 0,20 cm²",
+        "0,20 cm² / (4 − 1) = 0,0667 cm²",
+        "σ = √0,0667 cm² ≈ 0,258 cm"
+      ],
+      "xp": 20,
+      "gold": 0
+    },
+    {
+      "id": "l1-ue-glocke",
+      "type": "choice",
+      "title": "Die Glockenkurve",
+      "topic": "Messfehler & Statistik",
+      "story": "Für die Kerze gilt x̄ = 10,0 cm und σ ≈ 0,26 cm. Die Magistra fragt nach dem Bereich, in dem rund 95 % aller Messungen landen.",
+      "question": "Welcher Bereich enthält etwa 95,4 % der Messwerte?",
+      "options": ["9,74 cm … 10,26 cm", "9,48 cm … 10,52 cm", "9,22 cm … 10,78 cm", "10,00 cm … 10,52 cm"],
+      "correct": 1,
+      "explanation": "95,4 % liegen in x̄ ± 2σ = 10,0 cm ± 0,52 cm, also 9,48 cm … 10,52 cm.",
+      "hints": [
+        "68,3 % ↔ ± 1σ, 95,4 % ↔ ± 2σ, 99,7 % ↔ ± 3σ.",
+        "2σ = 2 · 0,26 cm = 0,52 cm",
+        "10,0 cm ± 0,52 cm = 9,48 cm … 10,52 cm"
+      ],
+      "solutionSteps": ["95,4 % entspricht x̄ ± 2σ", "2σ = 0,52 cm → 9,48 cm … 10,52 cm"],
+      "xp": 10,
+      "gold": 0
     }
   ],
   "flashcards": [

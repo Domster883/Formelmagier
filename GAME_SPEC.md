@@ -71,6 +71,7 @@ Jede Aufgabe: `id`, `story`, `given` (Werte mit Einheit), `spells` (erlaubte For
 
 - **Wiederholung, Wiederholung, Wiederholung:** Werte und Einheiten werden immer von Hand eingesetzt (keine Kopier-Abkürzungen). Gelöste Aufgaben kehren nach dem Leitner-Prinzip am Übungsschrein zurück, bis sie sauber sitzen.
 
+- **Erst lernen, dann prüfen:** Jede Lektion = Theorie → vorgerechnetes Beispiel (schrittweise) → Übung ohne Risiko mit Zwischenschritten. Die Prüfsteine einer Lektion öffnen sich erst nach der Übung.
 - Erst Story-Situation, dann Formel, dann Rechnung – nie nackte Rechenaufgaben
 - Nach jedem Level eine Lernkarten-Runde (Spaced Repetition)
 - Fehler erklären, nicht bestrafen: bei Einheitenfehlern genau zeigen, wo die Dimension nicht passt

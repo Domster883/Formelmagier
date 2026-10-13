@@ -3,7 +3,7 @@
  * Hier passiert die Kern-Mechanik: Zauber wählen, Werte mit Einheit
  * einsetzen, Ergebnis angeben – und die Einheiten-Magie prüft alles.
  */
-import type { ChoiceTask, Encounter, LevelData, NumericTask, Spell, Task } from '../content/types';
+import type { ChoiceTask, Encounter, GuideStep, LevelData, NumericTask, Spell, Task } from '../content/types';
 import { evaluateScalar, type Value } from '../engine/expr';
 import {
   UnitError,
@@ -29,7 +29,7 @@ import { openFlashcards } from './flashcards';
 const HELP_XP = [1, 0.8, 0.6, 0.25];
 const FAIL_MANA = 3;
 
-type Mode = 'normal' | 'training' | 'review';
+type Mode = 'normal' | 'training' | 'review' | 'practice';
 
 interface Session {
   level: LevelData;
@@ -47,7 +47,7 @@ interface Session {
 export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: boolean) => void, forceMode?: Mode) {
   const mode: Mode = forceMode ?? (game.isEncounterDone(enc.id) ? 'training' : 'normal');
   const training = mode !== 'normal';
-  if (training) game.advanceTaskRound();
+  if (training && mode !== 'practice') game.advanceTaskRound();
   const all = enc.tasks.map((id) => level.tasks.find((t) => t.id === id)!);
   const queue = training ? all : all.filter((t) => !game.isTaskDone(t.id));
   const max = enc.monster?.hp ?? 0;
@@ -88,7 +88,7 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
         ),
       );
     } else {
-      header.append(h('div', { class: 'foe' }, h('div', { class: 'foe-sprite crystal' }), h('div', { class: 'foe-info' }, h('strong', {}, enc.name), h('small', {}, 'Rätsel'))));
+      header.append(h('div', { class: 'foe' }, h('div', { class: `foe-sprite ${mode === 'practice' ? 'practice' : 'crystal'}` }), h('div', { class: 'foe-info' }, h('strong', {}, enc.name), h('small', {}, mode === 'practice' ? 'Übung – Fehler kosten nichts' : 'Rätsel'))));
     }
     header.append(
       h(
@@ -112,8 +112,8 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
     game.emit();
     content.innerHTML = '';
     content.append(
-      h('div', { class: 'victory' }, h('div', { class: 'big' }, enc.kind === 'crystal' ? '✨ Gelöst!' : '⚔ Sieg!'), h('p', {}, enc.outro)),
-      h('div', { class: 'row end' }, h('button', { class: 'primary', autofocus: true, onclick: () => modal.close() }, 'Zurück zur Karte')),
+      h('div', { class: 'victory' }, h('div', { class: 'big' }, mode === 'practice' ? '🎓 Übung geschafft!' : enc.kind === 'crystal' ? '✨ Gelöst!' : '⚔ Sieg!'), h('p', {}, enc.outro)),
+      h('div', { class: 'row end' }, h('button', { class: 'primary', autofocus: true, onclick: () => modal.close() }, mode === 'practice' ? 'Weiter ▸' : 'Zurück zur Karte')),
     );
     renderHeader();
   };
@@ -150,10 +150,28 @@ export function openEncounter(level: LevelData, enc: Encounter, onFinish: (won: 
   content.append(
     h('p', { class: 'story' }, enc.intro),
     mode === 'training' ? h('p', { class: 'note' }, 'Training: Du hast diese Begegnung schon gemeistert. Es gibt nur 25 % XP und kein Gold – aber jede Wiederholung festigt den Stoff.') : '',
+    mode === 'practice' ? practiceIntro() : '',
     mode === 'review' ? h('p', { class: 'note' }, `${queue.length} Aufgaben zur Wiederholung. Sauber gelöst (ohne Fehlversuch und ohne Hilfe) wandern sie in eine höhere Box und kommen seltener wieder – sonst kommen sie bald erneut dran.`) : '',
-    h('div', { class: 'row end' }, h('button', { class: 'primary', autofocus: true, onclick: nextTask }, enc.kind === 'crystal' ? 'Rätsel beginnen' : 'Kampf beginnen ⚔')),
+    h('div', { class: 'row end' }, h('button', { class: 'primary', autofocus: true, onclick: nextTask }, mode === 'practice' ? 'Übung beginnen ✎' : enc.kind === 'crystal' ? 'Rätsel beginnen' : 'Kampf beginnen ⚔')),
   );
   renderHeader();
+}
+
+function practiceIntro(): HTMLElement {
+  return h(
+    'div',
+    { class: 'note practice-note' },
+    h('p', {}, 'Hier übst du gemeinsam mit der Mentorin. Fehlversuche kosten weder Mana noch Leben, und alle Hilfen sind gratis.'),
+    h('b', {}, 'So wirkst du einen Zauber:'),
+    h(
+      'ol',
+      {},
+      h('li', {}, 'Bei manchen Übungen rechnest du erst Zwischenschritte (meist das Umrechnen in SI).'),
+      h('li', {}, 'Wähle den passenden Zauber aus deinem Grimoire.'),
+      h('li', {}, 'Trag jeden gegebenen Wert mit Zahl UND Einheit ein, z. B. 50 und dm².'),
+      h('li', {}, 'Gib dein Ergebnis mit Einheit an und klicke auf „Zaubern“.'),
+    ),
+  );
 }
 
 interface TaskCtx {
@@ -166,7 +184,9 @@ interface TaskCtx {
 function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   let helpLevel = 0;
   let failedOnce = false;
-  const stat = game.stat(task.topic);
+  const practice = s.mode === 'practice';
+  // Übungen fließen nicht in die Statistik ein
+  const stat = practice ? { attempts: 0, correct: 0, unitErrors: 0, magnitudeErrors: 0, hintsUsed: 0 } : game.stat(task.topic);
   const perTaskDamage = s.monsterMax / s.enc.tasks.length;
 
   const feedback = h('div', { class: 'feedback', 'aria-live': 'polite' });
@@ -175,7 +195,7 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   const updateHelpBtn = () => {
     const labels = ['Hinweis 1 💡', 'Lösungsweg-Skizze 🗺', 'Vollständige Lösung 📜'];
     if (helpLevel >= 3) helpBtn.setAttribute('disabled', '');
-    else helpBtn.textContent = `${labels[helpLevel]} (XP ×${HELP_XP[helpLevel + 1]})`;
+    else helpBtn.textContent = practice ? labels[helpLevel] : `${labels[helpLevel]} (XP ×${HELP_XP[helpLevel + 1]})`;
   };
   helpBtn.addEventListener('click', () => {
     if (helpLevel >= 3) return;
@@ -192,6 +212,15 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   updateHelpBtn();
 
   const fail = (msg: string, kind: 'fizzle' | 'weak' | 'miss', extra?: HTMLElement) => {
+    if (practice) {
+      failedOnce = true;
+      const title = { fizzle: '💨 Der Zauber verpufft!', weak: '🌫 Fast – die Größenordnung stimmt nicht!', miss: '✗ Noch nicht ganz!' }[kind];
+      feedback.className = `feedback bad ${kind}`;
+      feedback.innerHTML = '';
+      feedback.append(h('strong', {}, title), h('p', {}, msg), extra ?? '', h('p', { class: 'small' }, 'Kein Problem – in der Übung kostet ein Fehler nichts. Probier es noch einmal oder hol dir einen Hinweis.'));
+      reveal(feedback);
+      return;
+    }
     if (!failedOnce) {
       failedOnce = true;
       game.reviewTask(task.id, false);
@@ -229,6 +258,28 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
   };
 
   const succeed = (msg: string) => {
+    if (practice) {
+      const first = !game.data.practiced.includes(task.id);
+      if (first) game.data.practiced.push(task.id);
+      const xp = first ? task.xp : 0;
+      const up = xp ? game.addXp(xp) : false;
+      game.save();
+      game.emit();
+      feedback.className = 'feedback good';
+      feedback.innerHTML = '';
+      feedback.append(
+        h('strong', {}, '✨ Richtig!'),
+        h('p', {}, msg),
+        xp ? h('p', { class: 'reward' }, `+${xp} XP`) : '',
+        h('div', { class: 'worked' }, h('b', {}, 'So geht der Lösungsweg:'), h('ol', { class: 'steps' }, ...task.solutionSteps.map((st) => h('li', {}, st)))),
+        h('div', { class: 'row end' }, h('button', { class: 'primary', autofocus: true, onclick: ctx.next }, 'Weiter ▸')),
+      );
+      (feedback.querySelector('button.primary') as HTMLButtonElement)?.focus();
+      reveal(feedback);
+      if (up) toast(`Neuer Rang: ${game.rank}! Mana und Leben aufgefüllt.`, 'gold', 4000);
+      root.querySelectorAll<HTMLButtonElement | HTMLInputElement>('.task-input button, .task-input input').forEach((b) => (b.disabled = true));
+      return;
+    }
     const clean = !failedOnce && helpLevel === 0;
     const mult = s.mode === 'review' ? 0.5 * HELP_XP[helpLevel] : s.training ? 0.25 : HELP_XP[helpLevel];
     const xp = Math.round(task.xp * mult);
@@ -275,6 +326,11 @@ function renderTask(s: Session, task: Task, root: HTMLElement, ctx: TaskCtx) {
 
   if (task.type === 'choice') {
     renderChoice(task, inputArea, stat, succeed, fail);
+  } else if (practice && task.guide?.length) {
+    const guideArea = h('div', { class: 'guide' });
+    const spellArea = h('div', {});
+    inputArea.append(guideArea, spellArea);
+    renderGuide(task.guide, guideArea, () => renderNumeric(s, task, spellArea, stat, succeed, fail));
   } else {
     renderNumeric(s, task, inputArea, stat, succeed, fail);
   }
@@ -331,7 +387,7 @@ function renderNumeric(
   const known = s.level.spells.filter((sp) => game.knows(sp.id));
   const picker = h('div', { class: 'spell-picker' });
   const form = h('div', { class: 'spell-form' });
-  area.append(h('div', { class: 'label' }, 'Wähle einen Zauber aus deinem Grimoire:'), picker, form);
+  area.append(h('div', { class: 'label' }, s.mode === 'practice' ? 'Wähle den passenden Zauber aus deinem Grimoire:' : 'Wähle einen Zauber aus deinem Grimoire:'), picker, form);
   if (!known.length) {
     picker.append(h('p', { class: 'note' }, 'Du kennst noch keine Zauber. Sprich mit der Mentorin!'));
     return;
@@ -415,7 +471,7 @@ function renderNumeric(
       );
     }
 
-    const castBtn = h('button', { class: 'primary cast' }, `✦ Zaubern (${spell.manaCost} Mana)`);
+    const castBtn = h('button', { class: 'primary cast' }, s.mode === 'practice' ? '✦ Zaubern (Übung, kostenlos)' : `✦ Zaubern (${spell.manaCost} Mana)`);
     form.append(h('div', { class: 'row end' }, castBtn));
     castBtn.addEventListener('click', () => cast(spell, fields, res));
     form.querySelectorAll('input').forEach((inp) =>
@@ -486,13 +542,13 @@ function renderNumeric(
       return;
     }
 
-    // 2) Mana
-    if (game.data.mana < spell.manaCost) {
+    // 2) Mana (in der Übung gratis)
+    if (s.mode !== 'practice' && game.data.mana < spell.manaCost) {
       const btn = h('button', { class: 'ghost', onclick: () => openFlashcards({ mode: 'meditate' }) }, '🧘 Meditieren (Lernkarten → Mana)');
       feedbackOnly('Zu wenig Mana! Meditiere über Lernkarten, um Mana zurückzugewinnen.', btn);
       return;
     }
-    game.spendMana(spell.manaCost);
+    if (s.mode !== 'practice') game.spendMana(spell.manaCost);
     stat.attempts++;
 
     // 3) passt der Zauber zur Situation?
@@ -574,6 +630,78 @@ function renderNumeric(
   };
 }
 
+// ---------------------------------------------------------------------------
+// Angeleitete Zwischenschritte (nur in Übungen)
+// ---------------------------------------------------------------------------
+
+function renderGuide(steps: GuideStep[], area: HTMLElement, onDone: () => void) {
+  area.append(h('div', { class: 'label' }, 'Schritt für Schritt – zuerst die Zwischenschritte:'));
+  const list = h('ol', { class: 'guide-steps' });
+  area.append(list);
+
+  const showStep = (i: number) => {
+    if (i >= steps.length) {
+      onDone();
+      return;
+    }
+    const step = steps[i];
+    const value = h('input', { type: 'text', inputmode: 'decimal', placeholder: 'Zahlenwert', class: 'val', autocomplete: 'off', spellcheck: 'false' });
+    const unit = h('input', { type: 'text', placeholder: 'Einheit', class: 'unit', autocomplete: 'off', spellcheck: 'false' });
+    const check = h('button', { class: 'primary' }, 'Prüfen');
+    const show = h('button', { class: 'ghost' }, 'Zeig es mir');
+    const fb = h('div', { class: 'feedback', 'aria-live': 'polite' });
+    const li = h('li', { class: 'guide-step' }, h('p', {}, step.prompt), h('div', { class: 'row wrap' }, h('div', { class: 'pair' }, value, unit), check, show), fb);
+    list.append(li);
+    value.focus();
+
+    const done = (how: 'solved' | 'shown') => {
+      [value, unit, check, show].forEach((el) => (el.disabled = true));
+      li.classList.add(how);
+      fb.className = how === 'solved' ? 'feedback good' : 'feedback warn';
+      fb.innerHTML = '';
+      fb.append(h('strong', {}, how === 'solved' ? '✓ Richtig! ' : '👁 So geht es: '), step.explain);
+      showStep(i + 1);
+    };
+    const say = (msg: string) => {
+      fb.className = 'feedback bad';
+      fb.innerHTML = '';
+      fb.append(h('p', {}, msg), h('p', { class: 'small' }, `💡 ${step.hint}`));
+      reveal(fb);
+    };
+
+    check.addEventListener('click', () => {
+      const n = parseNumber(value.value);
+      if (Number.isNaN(n)) return say('Gib einen Zahlenwert ein (Dezimalkomma ist erlaubt).');
+      let answer;
+      try {
+        answer = toQuantity(n, unit.value);
+      } catch (e) {
+        return say(e instanceof UnitError ? e.message : String(e));
+      }
+      const expected = toQuantity(step.answer.value, step.answer.unit);
+      const verdict = judge(answer, expected, step.tolerance ?? 0.01);
+      if (verdict.kind === 'fizzle') return say(`Die Einheit passt nicht. ${explainMismatch(expected.dims, answer.dims)}`);
+      if (verdict.kind === 'hit') {
+        if (step.requireSI && !isCoherentSI(unit.value)) return say(`Der Wert stimmt – aber schreib ihn in SI-Einheiten ohne Vorsilbe (${prettyUnit(step.answer.unit)}).`);
+        return done('solved');
+      }
+      if (verdict.kind === 'weak') return say(`Die Ziffern stimmen, aber du liegst um den Faktor 10${sup(verdict.power)} daneben.`);
+      say('Das stimmt noch nicht.');
+    });
+    show.addEventListener('click', () => {
+      value.value = formatNumber(step.answer.value, 4);
+      unit.value = prettyUnit(step.answer.unit);
+      done('shown');
+    });
+    [value, unit].forEach((inp) =>
+      inp.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Enter') check.click();
+      }),
+    );
+  };
+  showStep(0);
+}
+
 function reveal(el: HTMLElement) {
   requestAnimationFrame(() => el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }));
 }
@@ -608,5 +736,26 @@ export function openReview(levels: LevelData[], onFinish: () => void, count = 6)
     tasks: pick.map((t) => t.id),
   };
   openEncounter(merged, enc, () => onFinish(), 'review');
+  return true;
+}
+
+/** Übung der Mentorin zu einer Lektion: ohne Risiko, mit Zwischenschritten und Gratis-Hilfen. */
+export function openPractice(level: LevelData, lessonIndex: number, onFinish: (done: boolean) => void): boolean {
+  const lesson = level.mentor.lessons[lessonIndex];
+  const pool = level.practice ?? [];
+  const ids = (lesson.practice ?? []).filter((id) => pool.some((t) => t.id === id));
+  if (!ids.length) return false;
+  const merged: LevelData = { ...level, tasks: [...level.tasks, ...pool] };
+  const enc: Encounter = {
+    id: `practice-${level.id}-${lessonIndex + 1}`,
+    marker: '',
+    kind: 'crystal',
+    name: `🎓 Übung – ${lesson.title}`,
+    lesson: 0,
+    intro: `${level.mentor.name}: „Jetzt bist du dran! Wir rechnen gemeinsam – ich helfe dir, wo du hängst.“`,
+    outro: `${level.mentor.name}: „Sehr gut! Genau so gehst du auch bei den Prüfsteinen vor.“`,
+    tasks: ids,
+  };
+  openEncounter(merged, enc, onFinish, 'practice');
   return true;
 }

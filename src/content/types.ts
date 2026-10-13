@@ -52,6 +52,20 @@ export interface TaskBase {
   gold: number;
 }
 
+/** Zwischenschritt einer angeleiteten Übung (z. B. „Rechne 50 dm² in m² um“) */
+export interface GuideStep {
+  prompt: string;
+  answer: { value: number; unit: string };
+  /** relative Toleranz, Standard ±1 % */
+  tolerance?: number;
+  /** Antwort muss in kohärenten SI-Einheiten stehen */
+  requireSI?: boolean;
+  /** Tipp nach einem Fehlversuch */
+  hint: string;
+  /** Erklärung, sobald der Schritt gelöst (oder gezeigt) ist */
+  explain: string;
+}
+
 export interface NumericTask extends TaskBase {
   type: 'numeric';
   given: GivenValue[];
@@ -65,6 +79,8 @@ export interface NumericTask extends TaskBase {
   /** Musterlösung als Zauber mit eingesetzten Werten (wird automatisch geprüft) */
   solution: { spell: string; inputs: Record<string, string> };
   commonMistakes?: CommonMistake[];
+  /** nur in Übungen: Zwischenschritte vor dem Zauber */
+  guide?: GuideStep[];
 }
 
 export interface ChoiceTask extends TaskBase {
@@ -93,11 +109,23 @@ export interface Encounter {
   monster?: { name: string; hp: number; attack: number; color: string };
 }
 
+/** Vorgerechnetes Beispiel der Mentorin (Schritt für Schritt aufgedeckt) */
+export interface WorkedExample {
+  title: string;
+  situation: string;
+  steps: { say: string; math?: string }[];
+  /** Merksatz am Ende */
+  takeaway: string;
+}
+
 export interface Lesson {
   title: string;
   /** max. 5 Sätze */
   lines: string[];
   unlocks: string[];
+  example?: WorkedExample;
+  /** Übungsaufgaben (IDs aus `practice`) – ohne Risiko, mit Zwischenschritten */
+  practice?: string[];
 }
 
 export interface Flashcard {
@@ -122,6 +150,8 @@ export interface LevelData {
   map: string[];
   spells: Spell[];
   tasks: Task[];
+  /** Übungsaufgaben der Mentorin (zählen nicht als Prüfsteine) */
+  practice?: Task[];
   encounters: Encounter[];
   flashcards: Flashcard[];
   bossVictory: string;

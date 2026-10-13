@@ -49,6 +49,27 @@ const INDEPENDENT: Record<string, () => number> = {
   },
   'l1-golem-unten': () => 2.45 - 2 * Math.sqrt(0.002),
   'l1-golem-oben': () => 2.45 + 2 * Math.sqrt(0.002),
+  // Übungen der Mentorin
+  'l1-ue-kmh': () => (18 * 1000) / 3600,
+  'l1-ue-eis': () => 917 * 50 * 0.01 * 4e-3,
+  'l1-ue-salz': () => 3 / (0.5e-3),
+  'l1-ue-flieger': () => Math.hypot(12, 5),
+  'l1-ue-mittel': () => (0.101 + 0.099 + 0.103 + 0.097) / 4,
+  'l1-ue-sigma': () => {
+    const x = [0.101, 0.099, 0.103, 0.097];
+    const m = x.reduce((a, b) => a + b) / x.length;
+    return Math.sqrt(x.reduce((a, b) => a + (b - m) ** 2, 0) / (x.length - 1));
+  },
+};
+
+/** Unabhängige Kontrolle der Zwischenschritte (SI-Werte, in Reihenfolge) */
+const GUIDE: Record<string, number[]> = {
+  'l1-ue-kmh': [18 * 1000, 3600],
+  'l1-ue-eis': [50 * 0.01, 4e-3],
+  'l1-ue-salz': [0.5e-3],
+  'l1-ue-flieger': [12 ** 2 + 5 ** 2],
+  'l1-ue-mittel': [0.101 + 0.099 + 0.103 + 0.097],
+  'l1-ue-sigma': [2 * 0.001 ** 2 + 2 * 0.003 ** 2, (2 * 0.001 ** 2 + 2 * 0.003 ** 2) / 3],
 };
 
 for (const level of LEVELS) {
@@ -99,12 +120,47 @@ for (const level of LEVELS) {
       expect(used.size).toBe(level.tasks.length);
     });
 
-    for (const t of level.tasks) {
+    it('Lektionen: Beispiel und Übung vorhanden, Übungen nutzen nur bekannte Zauber', () => {
+      const practice = new Map((level.practice ?? []).map((t) => [t.id, t]));
+      const used = new Set<string>();
+      const known = new Set<string>();
+      for (const l of level.mentor.lessons) {
+        l.unlocks.forEach((u) => known.add(u));
+        expect(l.example, `${l.title}: Beispiel fehlt`).toBeDefined();
+        expect(l.example!.steps.length).toBeGreaterThan(1);
+        expect(l.practice?.length, `${l.title}: Übung fehlt`).toBeGreaterThan(0);
+        for (const id of l.practice ?? []) {
+          const t = practice.get(id);
+          expect(t, id).toBeDefined();
+          expect(tasks.has(id), `${id} ist auch eine Prüfungsaufgabe`).toBe(false);
+          expect(used.has(id), `${id} doppelt verwendet`).toBe(false);
+          used.add(id);
+          if (t!.type === 'numeric') t!.spells.forEach((s) => expect(known.has(s), `${id}: ${s} zu früh`).toBe(true));
+        }
+      }
+      expect(used.size).toBe(practice.size);
+    });
+
+    for (const t of level.practice ?? []) {
+      if (t.type !== 'numeric') continue;
+      it(`Übung ${t.id}: Zwischenschritte stimmen`, () => {
+        const want = GUIDE[t.id] ?? [];
+        expect(t.guide?.length ?? 0, 'Kontrollwerte in GUIDE fehlen').toBe(want.length);
+        t.guide?.forEach((g, i) => {
+          const q = toQuantity(g.answer.value, g.answer.unit);
+          expect(Math.abs(q.value - want[i]) / Math.abs(want[i]), `${t.id} Schritt ${i + 1}`).toBeLessThan(g.tolerance ?? 0.01);
+          if (g.requireSI) expect(isCoherentSI(g.answer.unit)).toBe(true);
+        });
+      });
+    }
+
+    for (const t of [...level.tasks, ...(level.practice ?? [])]) {
+      const isPractice = !tasks.has(t.id);
       it(`Aufgabe ${t.id}: Pflichtfelder`, () => {
         expect(t.hints).toHaveLength(3);
         expect(t.solutionSteps.length).toBeGreaterThan(0);
         expect(t.xp).toBeGreaterThan(0);
-        expect(t.gold).toBeGreaterThan(0);
+        if (!isPractice) expect(t.gold).toBeGreaterThan(0);
         expect(t.story.length).toBeGreaterThan(20);
         if (t.type === 'choice') {
           expect(t.correct).toBeGreaterThanOrEqual(0);

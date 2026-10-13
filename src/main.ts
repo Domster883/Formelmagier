@@ -123,7 +123,8 @@ function showTitle() {
           {},
           h('li', {}, 'Bewegen: Pfeiltasten / WASD – oder auf die Karte klicken.'),
           h('li', {}, 'Interagieren: E, Leertaste oder Enter (oder die Figur anklicken).'),
-          h('li', {}, 'Mentorin zuerst! Sie bringt dir Theorie und neue Zauber bei.'),
+          h('li', {}, 'Mentorin zuerst! Jede Lektion hat drei Teile: kurze Theorie → sie rechnet ein Beispiel Schritt für Schritt vor → du übst selbst (Fehler kosten in der Übung nichts).'),
+          h('li', {}, 'Erst nach der Übung öffnen sich die Prüfsteine zu dieser Lektion. Theorie, Beispiele und Übungen kannst du jederzeit bei der Mentorin wiederholen; Theorie und Beispiele stehen auch im Grimoire.'),
           h('li', {}, 'Übungsschrein: gelöste Aufgaben kommen nach dem Leitner-Prinzip wieder – so lange, bis sie sitzen.'),
           h('li', {}, 'Zaubern: Zauber wählen → Werte MIT Einheit einsetzen → Ergebnis mit Einheit angeben.'),
           h('li', {}, 'Falsche Dimension → der Zauber verpufft. Falsche Zehnerpotenz → er trifft nur schwach.'),
@@ -240,7 +241,13 @@ LevelScene.hooks = {
         const heard = game.data.lessons[level.id] ?? 0;
         if (heard < enc.lesson) {
           const lesson = level.mentor.lessons[enc.lesson - 1];
-          showDialog(enc.name, [`${enc.intro}`, `Dafür fehlt dir noch das Wissen aus „${lesson.title}“. Sprich mit ${level.mentor.name}!`]);
+          const pending = (game.data.theorySeen[level.id] ?? 0) > heard && heard === enc.lesson - 1;
+          showDialog(enc.name, [
+            `${enc.intro}`,
+            pending
+              ? `Fast so weit! Mach zuerst die Übung zu „${lesson.title}“ bei ${level.mentor.name} fertig – dann bist du für diese Prüfung gerüstet.`
+              : `Dafür fehlt dir noch das Wissen aus „${lesson.title}“. Sprich mit ${level.mentor.name} – sie erklärt es dir, rechnet ein Beispiel vor und übt mit dir.`,
+          ]);
           return;
         }
         const firstWin = !game.isEncounterDone(enc.id);

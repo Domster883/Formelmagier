@@ -232,3 +232,27 @@ button.choice.wrong { border-color: var(--bad); background: #4a1f24; }
   .me { text-align: left; }
   .logo { font-size: 34px; }
 }
+
+/* Lernphase: vorgerechnetes Beispiel, Übung mit Zwischenschritten */
+.example-steps { margin: 12px 0; }
+.example-step { margin: 8px 0; animation: fadein .3s ease-out; }
+.example-step p { margin: 0 0 4px; }
+.math { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; background: #120f1b; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; display: inline-block; color: #e9e2ff; }
+.takeaway { background: #3a2a63; border-left: 4px solid var(--gold, #f1c40f); padding: 8px 12px; border-radius: 6px; }
+.example-box { margin: 8px 0; }
+.example-box summary { cursor: pointer; color: var(--accent); }
+.practice-note ol { margin: 4px 0 0; padding-left: 22px; }
+.practice-note p { margin: 0 0 6px; }
+.foe-sprite.practice { background: #1f6f8b; border-radius: 10px; }
+.foe-sprite.practice::before { content: '🎓'; position: static; display: block; width: auto; height: auto; background: none; box-shadow: none; font-size: 32px; text-align: center; line-height: 52px; }
+.foe-sprite.practice::after { display: none; }
+.guide { margin-bottom: 10px; }
+.guide-steps { padding-left: 22px; margin: 6px 0; }
+.guide-step { margin: 8px 0; }
+.guide-step p { margin: 0 0 4px; }
+.guide-step .feedback { margin-top: 6px; }
+.worked { margin-top: 6px; }
+.lesson-menu { display: flex; flex-direction: column; gap: 8px; }
+.lesson-row { background: var(--panel-2); border-radius: 8px; padding: 6px 10px; }
+@keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.guide-step .pair { flex: 1; min-width: 220px; }

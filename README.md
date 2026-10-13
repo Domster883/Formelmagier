@@ -31,6 +31,8 @@ npm run build      # statische Seite in dist/ (relativ verlinkt, überall hostba
 - Richtige Ziffern, falsche Zehnerpotenz → **trifft schwach**
 - Innerhalb der Toleranz (Standard ±1 %) → **Volltreffer**
 
+**Lernen vor dem Prüfen:** Jede Lektion bei der Mentorin hat drei Teile: kurze Theorie → ein **vorgerechnetes Beispiel**, das Schritt für Schritt aufgedeckt wird → eine **Übung**, bei der du selbst rechnest (Zwischenschritte wie „50 dm² in m²“ werden einzeln geprüft, Fehler kosten weder Mana noch Leben, alle Hilfen sind gratis). Erst danach öffnen sich die Prüfsteine dieser Lektion. Theorie, Beispiel und Übung lassen sich jederzeit bei der Mentorin wiederholen, Theorie und Beispiele stehen auch im Grimoire.
+
 **Wiederholung:** Jede gelöste Aufgabe landet in einer Leitner-Box. Am **Übungsschrein** kommen fällige Aufgaben zurück; sauber gelöst (ohne Fehlversuch, ohne Hilfe) wandern sie eine Box höher und kommen seltener, sonst zurück in Box 1. Die HUD-Anzeige „🔁 n fällig“ erinnert daran.
 
 Einheiten-Schreibweisen: `m²`, `m^2`, `m2`; `·`, `*` oder Leerzeichen für Multiplikation; alles nach `/` steht im Nenner (`kg/m²s` = `kg/(m²·s)`). Zahlen: `2,39`, `2.39`, `2,39e-4`, `2,39·10^-4`.
@@ -39,7 +41,8 @@ Einheiten-Schreibweisen: `m²`, `m^2`, `m2`; `·`, `*` oder Leerzeichen für Mul
 
 Alles Lernmaterial steht in `src/content/levels/level-XX.json`:
 
-- `mentor.lessons` – Lektionen (max. 5 Sätze), `unlocks` = freigeschaltete Zauber
+- `mentor.lessons` – Lektionen (max. 5 Sätze), `unlocks` = freigeschaltete Zauber, `example` = vorgerechnetes Beispiel (Schritte mit `say`/`math`, Merksatz `takeaway`), `practice` = IDs der Übungsaufgaben
+- `practice` – Übungsaufgaben wie `tasks`, zusätzlich `guide` = Zwischenschritte (Frage, Antwort mit Einheit, Tipp, Erklärung)
 - `spells` – Zauber: Anzeigeformel, auswertbare Formel (`expr`), Variablen mit erwarteter Einheit
 - `tasks` – Aufgaben (`numeric` oder `choice`): Story, Gegebenes, erlaubte Zauber, Antwort, Toleranz, 3 Hinweise, Lösungsweg, XP, Gold, Musterlösung, typische Fehler
 - `encounters` – wo auf der Karte welche Aufgaben warten (Kristall, Monster, Boss)

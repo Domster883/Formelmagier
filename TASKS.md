@@ -27,7 +27,8 @@
 - [x] „Mühsam ist gewollt“: Einsetzen-Knopf entfernt, erwartete SI-Einheit nur noch mit Brille sichtbar
 - [x] Übungsschrein: Leitner-Wiederholung gelöster Aufgaben, HUD-Anzeige „fällig“
 - [ ] Skriptum-PDF ins Repo (`docs/`) – öffentlich nicht auffindbar, kommt vom Nutzer
-- [ ] Demo-Feedback einarbeiten
+- [x] Demo-Feedback: Lernphase vor der Prüfung – vorgerechnetes Beispiel + Übung mit Zwischenschritten pro Lektion, Prüfsteine erst nach der Übung
+- [ ] Weiteres Demo-Feedback einarbeiten
 
 ## Phase 4 – Level 2–10
 - [ ] Level 2 Windpfade (Kinematik)

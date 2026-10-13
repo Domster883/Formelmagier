@@ -31,6 +31,10 @@ export interface SaveData {
   learnedSpells: string[];
   /** gehörte Lektionen pro Level */
   lessons: Record<number, number>;
+  /** Lektionen pro Level, deren Theorie schon gehört wurde (Übung evtl. noch offen) */
+  theorySeen: Record<number, number>;
+  /** einmal gelöste Übungsaufgaben (XP nur beim ersten Mal) */
+  practiced: string[];
   completedTasks: string[];
   completedEncounters: string[];
   bossDefeated: number[];
@@ -65,6 +69,8 @@ function freshSave(name: string): SaveData {
     items: [],
     learnedSpells: [],
     lessons: {},
+    theorySeen: {},
+    practiced: [],
     completedTasks: [],
     completedEncounters: [],
     bossDefeated: [],
