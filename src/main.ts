@@ -88,11 +88,19 @@ function showTitle() {
   screen.innerHTML = '';
   const hasSave = game.hasSave();
   const name = h('input', { type: 'text', placeholder: 'Name deines Zauberlehrlings', maxlength: 24, value: '' });
+  let armed = !hasSave;
+  const newBtn = h('button', { class: hasSave ? 'ghost' : 'primary' }, '✦ Neues Spiel');
   const start = () => {
-    if (hasSave && !confirm('Neues Spiel beginnen? Der alte Spielstand wird überschrieben.')) return;
+    // Bestätigung im Spiel statt confirm() (in eingebetteten Ansichten blockiert)
+    if (!armed) {
+      armed = true;
+      newBtn.textContent = '⚠ Alten Spielstand überschreiben? Nochmal klicken';
+      return;
+    }
     game.newGame(name.value);
     showWorld();
   };
+  newBtn.addEventListener('click', start);
   name.addEventListener('keydown', (e) => {
     if ((e as KeyboardEvent).key === 'Enter') start();
   });
@@ -105,7 +113,7 @@ function showTitle() {
       hasSave
         ? h('button', { class: 'primary big', autofocus: true, onclick: () => { game.load(); showWorld(); } }, `▶ Weiterspielen (${loadName()})`)
         : null,
-      h('div', { class: 'new-game' }, name, h('button', { class: hasSave ? 'ghost' : 'primary', onclick: start }, '✦ Neues Spiel')),
+      h('div', { class: 'new-game' }, name, newBtn),
       h(
         'details',
         { class: 'howto' },
